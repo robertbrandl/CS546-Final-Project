@@ -1,0 +1,15 @@
+{
+  "name": "cs546-final-project",
+  "version": "1.0.0",
+  "description": "TV Show Recommender",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Robert Brandl, Krystal Hong, Linette Santana Encarnacion, Sydney Linford",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^6.2.0"
+  }
+}
