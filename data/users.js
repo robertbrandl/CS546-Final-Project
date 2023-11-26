@@ -3,13 +3,19 @@ import {ObjectId} from 'mongodb';
 import {users} from '../config/mongoCollections.js';
 import validator from 'email-validator';
 
-const create = async (
+const register = async (
     firstName,
     lastName,
     email,
     password
 ) => {
 
+}
+const login = async (
+    email, 
+    password
+) => {
+    
 }
 const getUser = async () => {
 
