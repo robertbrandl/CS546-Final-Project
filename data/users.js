@@ -15,7 +15,7 @@ const login = async (
     email, 
     password
 ) => {
-    
+
 }
 const getUser = async () => {
 
@@ -31,3 +31,4 @@ const changePassword = async (
 ) => {
 
 }
+export default {register, login, getUser, saveShow, removeShow, changePassword};

@@ -1,0 +1,19 @@
+<form id="search-form" method="GET" action="/search-results"> 
+        <label for="searchTerm">Search for a show:</label> 
+        <input type="text" id="searchTerm" name="searchTerm" required> 
+        <button type="submit">Search</button> 
+</form> 
+<h1>{{title}}</h1>
+{{#each shows}}
+    <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>
+    <p>Plot Synopsis: {{{plot}}}</p>
+    <h3>Average Rating: {{rating}}</h3>
+    <h3>Genres:</h3>
+    <ul>
+        {{#each genres}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
+    <h3>Percent of viewers that would watch again: {{rewatchPercent}}</h3>
+    <h3>Average Runtime: {{runtime}}</h3>
+{{/each}}
