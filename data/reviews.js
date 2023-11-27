@@ -71,3 +71,4 @@ const remove = async (reviewId) => {
     //need to handle how it affects shows and users
     return {eventName: deletionInfo.eventName, deleted: true};
 }
+export default {create, update, remove};
