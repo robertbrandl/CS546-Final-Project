@@ -22,6 +22,9 @@ const searchForShow = async(
 ) => {
 
 }
+const find = async() =>{ //Don't Know What to Watch? Menu Function!
+
+}
 const sortByGenre = async () => {
 
 }
@@ -34,8 +37,18 @@ const sortByRating = async () => {
 const sortByRewatchPercent = async () => {
 
 }
-const getIndividualShow = async () =>{
+const getIndividualShow = async (
+    apiId
+) =>{
+    let id = validation.checkString(apiId);
+    const showCollection = await shows();
+    let show = showCollection.findOne({apiId: id});
+    if (show === null){
 
+    }
+    else{
+        return show;
+    }
 }
 const getSimilarShows = async () =>{
 
