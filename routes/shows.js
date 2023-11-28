@@ -10,5 +10,8 @@ router.route('/').get(async (req, res) => {
 router.route('/:id').get(async (req, res) => {
     //code here for GET will render the individual TV Show page
 });
+router.route('/find').post(async (req, res) => {//Don't Know What to Watch? Menu Route
+    //code here for POST will render the individual TV Show page
+});
 
 export default router;
