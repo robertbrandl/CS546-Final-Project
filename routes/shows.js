@@ -32,5 +32,10 @@ router.route('/findmenu').post(async (req, res) => {//Don't Know What to Watch? 
     //when finished, run the data function, make sure no errors
     //render the output page called menuresults
 });
+router.route('/searchresults').get(async (req, res) => {
+    //code here for GET will render the page with all TV Shows
+    let s = await showData.searchForShow();
+    return res.render('allshows', {title: "Search Results", shows: s});
+});
 
 export default router;
