@@ -7,13 +7,21 @@
 {{#each shows}}
     <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>
     <p>Plot Synopsis: {{{plot}}}</p>
-    <h3>Average Rating: {{rating}}</h3>
+    {{#if check}}
+        <h3>Average Rating: Not Available</h3>
+    {{else}}
+        <h3>Average Rating: {{averageRating}}</h3>
+    {{/if}}
     <h3>Genres:</h3>
     <ul>
         {{#each genres}}
             <li>{{this}}</li>
         {{/each}}
     </ul>
-    <h3>Percent of viewers that would watch again: {{rewatchPercent}}</h3>
+    {{#if check}}
+        <h3>Percent of viewers that would watch again: Not Available</h3>
+    {{else}}
+        <h3>Percent of viewers that would watch again: {{rewatchPercent}}</h3>
+    {{/if}}
     <h3>Average Runtime: {{runtime}}</h3>
 {{/each}}
