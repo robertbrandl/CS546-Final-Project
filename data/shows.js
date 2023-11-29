@@ -33,7 +33,7 @@ const getAllShows = async () => {
 const searchForShow = async(
     searchTerm
 ) => {
-
+//use axios with https://api.tvmaze.com/search/shows?q=${searchTerm}
 }
 const findMenu = async(
     //params
