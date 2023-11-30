@@ -12,8 +12,8 @@ const getAllShows = async () => {
     }
     if (!showsres || showsres.data.length <= 0){throw "No shows found"}
     let arr = [];
+    const showCollection = await shows();
     for (let x of showsres.data){
-        const showCollection = await shows();
         let show = await showCollection.findOne({apiId: x.id});
         if (show !== null){
             if (show.averageRating === 0){
@@ -33,7 +33,34 @@ const getAllShows = async () => {
 const searchForShow = async(
     searchTerm
 ) => {
-//use axios with https://api.tvmaze.com/search/shows?q=${searchTerm}
+    let term = validation.checkString(searchTerm);
+    let showsres = undefined;
+    try{
+        showsres = await axios.get(`https://api.tvmaze.com/search/shows?q=${term}`);
+    }catch(e){
+        throw e;
+    }
+    if (!showsres || showsres.data.length <= 0){throw "No matching shows found"}
+    let arr = [];
+    const showCollection = await shows();
+    for (let x of showsres.data){
+        let show = await showCollection.findOne({apiId: x.id});
+        if (show !== null){
+            if (show.averageRating === 0){
+                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, runtime: x.averageRuntime, check: true});
+            }
+            else{
+                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, runtime: x.averageRuntime, check: false});
+            }
+            
+        }
+        else{
+            arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: 0, genres: x.genres, rewatchPercent: 0, runtime: x.averageRuntimex, check: true});
+        }
+    }
+    return arr;
+
+//use axios with 
 }
 const findMenu = async(
     //params

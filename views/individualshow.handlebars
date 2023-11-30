@@ -1,43 +1,67 @@
 Show info:
-plot summary, average rating, genre, percentage that would watch again, and average episode runtime, director/producer, lead actors, reviews, similar shows
-add button to add review, links for similar shows
+lead actors, reviews, similar shows
+add button to add review, add button to save show, links for similar shows
 
 {{#each show}}
     <h1>{{name}}</h1>
-    <p>Plot Synopsis: {{{plot}}}</p>
+    {{#if plot}}
+        <p>Plot Synopsis: {{{plot}}}</p>
+    {{else}}
+        <p>Plot Synopsis: Not Found</p>
+    {{/if}}
     {{#if ../check}}
         <h3>Average Rating: Not Available</h3>
     {{else}}
         <h3>Average Rating: {{averageRating}}</h3>
     {{/if}}
-    <h3>Genres:</h3>
-    <ul>
-        {{#each genres}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
+    {{#if genres}}
+        <h3>Genres:</h3>
+        <ul>
+            {{#each genres}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <h3>Genres: None Found</h3>
+    {{/if}}
     {{#if ../check}}
         <h3>Percent of viewers that would watch again: Not Available</h3>
     {{else}}
         <h3>Percent of viewers that would watch again: {{rewatchPercent}}</h3>
     {{/if}}
-    <h3>Average Runtime: {{averageRuntime}}</h3>
-    <h3>Actors:</h3>
-    <ul>
-        {{#each leadActors}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
-    <h3>Producers:</h3>
-    <ul>
-        {{#each producers}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
-    <h3>Directors:</h3>
-    <ul>
-        {{#each directors}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
+    {{#if averageRuntime}}
+        <h3>Average Runtime: {{averageRuntime}}</h3>
+    {{else}}
+        <h3>Average Runtime: Not Available</h3>
+    {{/if}}
+    {{#if leadActors}}
+        <h3>Actors:</h3>
+        <ul>
+            {{#each leadActors}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <h3>Actors: None Found</h3>
+    {{/if}}
+    {{#if producers}}
+        <h3>Producers:</h3>
+        <ul>
+            {{#each producers}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <h3>Producers: None Found</h3>
+    {{/if}}
+    {{#if directors}}
+        <h3>Directors:</h3>
+        <ul>
+            {{#each directors}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <h3>Directors: None Found</h3>
+    {{/if}}
 {{/each}}
