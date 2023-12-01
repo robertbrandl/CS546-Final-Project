@@ -44,8 +44,10 @@ const searchForShow = async(
     let arr = [];
     const showCollection = await shows();
     for (let x of showsres.data){
+        x = x.show;
         let show = await showCollection.findOne({apiId: x.id});
         if (show !== null){
+            console.log("not null");
             if (show.averageRating === 0){
                 arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, runtime: x.averageRuntime, check: true});
             }
@@ -55,9 +57,12 @@ const searchForShow = async(
             
         }
         else{
+            console.log("null");
+            console.log(x.name);
             arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: 0, genres: x.genres, rewatchPercent: 0, runtime: x.averageRuntimex, check: true});
         }
     }
+    console.log(arr);
     return arr;
 
 //use axios with 
@@ -162,7 +167,9 @@ const getIndividualShow = async (
         return show;
     }
 }
-const getSimilarShows = async () =>{
+const getSimilarShows = async (
+    show
+) =>{
 
 }
 export default {getAllShows, searchForShow, sortByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu};
