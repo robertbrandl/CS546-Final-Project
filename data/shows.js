@@ -44,6 +44,7 @@ const searchForShow = async(
     let arr = [];
     const showCollection = await shows();
     for (let x of showsres.data){
+        x = x.show;
         let show = await showCollection.findOne({apiId: x.id});
         if (show !== null){
             if (show.averageRating === 0){
@@ -162,7 +163,9 @@ const getIndividualShow = async (
         return show;
     }
 }
-const getSimilarShows = async () =>{
+const getSimilarShows = async (
+    show
+) =>{
 
 }
 export default {getAllShows, searchForShow, sortByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu};

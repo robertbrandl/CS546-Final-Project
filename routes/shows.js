@@ -2,6 +2,18 @@ import {Router} from 'express';
 const router = Router();
 import {showData} from '../data/index.js';
 import * as validation from '../validation.js';
+router.route('/searchresults').get(async (req, res) => {
+    //code here for GET will render the page with all TV Shows
+    let body = req.query.searchTerm;
+    let term = "";
+    try{
+        term = validation.checkString(body);
+      }catch(e){
+        return res.status(400)//.render('login', {title: "Login", error: true, msg: "Error: Email is not valid"});
+      }
+    let s = await showData.searchForShow(term);
+    return res.render('allshows', {title: "Search Results", shows: s});
+});
 router.route('/').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows
     let s = await showData.getAllShows();
@@ -32,22 +44,6 @@ router.route('/findmenu').post(async (req, res) => {//Don't Know What to Watch? 
     //when finished, run the data function, make sure no errors
     //render the output page called menuresults
 });
-router.route('/searchresults').get(async (req, res) => {
-    //code here for GET will render the page with all TV Shows
-    let body = req.body;
-    if (!body || Object.keys(body).length === 0) {
-        return res
-          .status(400)
-          //.render('login', {title: "Login", error: true, msg: "Error: Must enter data for the fields"});
-      }
-    let term = "";
-    try{
-        term = validation.checkString(body.searchTerm);
-      }catch(e){
-        return res.status(400)//.render('login', {title: "Login", error: true, msg: "Error: Email is not valid"});
-      }
-    let s = await showData.searchForShow(term);
-    return res.render('allshows', {title: "Search Results", shows: [s]});
-});
+
 
 export default router;
