@@ -11,9 +11,7 @@ router.route('/searchresults').get(async (req, res) => {
       }catch(e){
         return res.status(400)//.render('login', {title: "Login", error: true, msg: "Error: Email is not valid"});
       }
-      console.log(term);
     let s = await showData.searchForShow(term);
-    console.log(s);
     return res.render('allshows', {title: "Search Results", shows: s});
 });
 router.route('/').get(async (req, res) => {
