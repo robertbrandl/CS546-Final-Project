@@ -1,6 +1,7 @@
 import * as validation from "../validation.js";
 import {ObjectId} from 'mongodb';
 import {shows} from '../config/mongoCollections.js';
+import {reviews} from '../config/mongoCollections.js';
 import axios from 'axios';
 
 const getAllShows = async () => {
@@ -17,15 +18,15 @@ const getAllShows = async () => {
         let show = await showCollection.findOne({apiId: x.id});
         if (show !== null){
             if (show.averageRating === 0){
-                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, runtime: x.averageRuntime, check: true});
+                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: true});
             }
             else{
-                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, runtime: x.averageRuntime, check: false});
+                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: false});
             }
             
         }
         else{
-            arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: 0, genres: x.genres, rewatchPercent: 0, runtime: x.averageRuntimex, check: true});
+            arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: 0, genres: x.genres, rewatchPercent: 0, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: true});
         }
     }
     return arr;
@@ -48,15 +49,15 @@ const searchForShow = async(
         let show = await showCollection.findOne({apiId: x.id});
         if (show !== null){
             if (show.averageRating === 0){
-                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, runtime: x.averageRuntime, check: true});
+                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: true});
             }
             else{
-                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, runtime: x.averageRuntime, check: false});
+                arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: false});
             }
             
         }
         else{
-            arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: 0, genres: x.genres, rewatchPercent: 0, runtime: x.averageRuntimex, check: true});
+            arr.push({name: x.name, apiId: x.id, plot: x.summary, rating: 0, genres: x.genres, rewatchPercent: 0, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: true});
         }
     }
     return arr;
@@ -146,7 +147,7 @@ const getIndividualShow = async (
             averageRating: 0,
             genres: res.data.genres,
             rewatchPercent: 0,
-            averageRuntime: res.data.averageRuntime,
+            averageRuntime: res.data.averageRuntime == null ? res.data.runtime : res.data.averageRuntime,
             leadActors: actorArr,
             directors: directors,
             producers: producers,
@@ -163,9 +164,27 @@ const getIndividualShow = async (
         return show;
     }
 }
+const getReviewsForShow = async (
+    show
+)=>{
+    let revs = show.reviews;
+    const reviewCollection = await reviews();
+    let arr = [];
+    for (let x of revs){
+        const review = undefined;
+        if (typeof x === "string"){
+            review = await reviewCollection.findOne({_id: new ObjectId(x)});
+        }
+        else{
+            review = await reviewCollection.findOne({_id: x});
+        }
+        arr.push(review);
+    }
+    return arr;
+}
 const getSimilarShows = async (
     show
 ) =>{
 
 }
-export default {getAllShows, searchForShow, sortByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu};
+export default {getAllShows, searchForShow, sortByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow};

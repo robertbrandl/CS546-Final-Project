@@ -1,7 +1,6 @@
 Show info:
-reviews, similar shows
+similar shows
 add button to add review, add button to save show, links for similar shows
-
 {{#each show}}
     <h1>{{name}}</h1>
     {{#if plot}}
@@ -27,7 +26,7 @@ add button to add review, add button to save show, links for similar shows
     {{#if ../check}}
         <h3>Percent of viewers that would watch again: Not Available</h3>
     {{else}}
-        <h3>Percent of viewers that would watch again: {{rewatchPercent}}</h3>
+        <h3>Percent of viewers that would watch again: {{rewatchPercent}}%</h3>
     {{/if}}
     {{#if averageRuntime}}
         <h3>Average Runtime: {{averageRuntime}}</h3>
@@ -64,4 +63,31 @@ add button to add review, add button to save show, links for similar shows
     {{else}}
         <h3>Directors: None Found</h3>
     {{/if}}
+{{/each}}
+<h2>Reviews: </h2>
+{{#if review}}
+    {{#each review}}
+        <h3>{{title}}</h3>
+        <h4>By: {{authorFirstName}} {{authorLastName}}</h4>
+        <h4>Rating: {{rating}}</h4>
+        <p>{{content}}</p>
+        {{#if watchAgain}}
+            <h4>Would you watch again? YES!</h4>
+        {{else}}
+            <h4>Would you watch again? NO!</h4>
+        {{/if}}
+    {{/each}}
+{{else}}
+    <h3>None Posted Yet!</h3>
+{{/if}}
+<h2>Similar Shows: </h2>
+{{#each sims}}
+    <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>
+    <h3>Average Rating: {{rating}}</h3>
+    <h3>Genres:</h3>
+    <ul>
+        {{#each genres}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
 {{/each}}
