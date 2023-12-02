@@ -4,36 +4,40 @@
         <button type="submit">Search</button> 
 </form> 
 <h1>{{title}}</h1>
-{{#each shows}}
-    <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>
-    {{#if plot}}
-        <p>Plot Synopsis: {{{plot}}}</p>
-    {{else}}
-        <p>Plot Synopsis: Not Found</p>
-    {{/if}}
-    {{#if check}}
-        <h3>Average Rating: Not Available</h3>
-    {{else}}
-        <h3>Average Rating: {{averageRating}}</h3>
-    {{/if}}
-    {{#if genres}}
-        <h3>Genres:</h3>
-        <ul>
-            {{#each genres}}
-                <li>{{this}}</li>
-            {{/each}}
-        </ul>
-    {{else}}
-        <h3>Genres: None Found</h3>
-    {{/if}}
-    {{#if check}}
-        <h3>Percent of viewers that would watch again: Not Available</h3>
-    {{else}}
-        <h3>Percent of viewers that would watch again: {{rewatchPercent}}</h3>
-    {{/if}}
-    {{#if averageRuntime}}
-        <h3>Average Runtime: {{averageRuntime}}</h3>
-    {{else}}
-        <h3>Average Runtime: Not Available</h3>
-    {{/if}}
-{{/each}}
+{{#if shows}}
+    {{#each shows}}
+        <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>
+        {{#if plot}}
+            <p>Plot Synopsis: {{{plot}}}</p>
+        {{else}}
+            <p>Plot Synopsis: Not Found</p>
+        {{/if}}
+        {{#if check}}
+            <h3>Average Rating: Not Available</h3>
+        {{else}}
+            <h3>Average Rating: {{averageRating}}</h3>
+        {{/if}}
+        {{#if genres}}
+            <h3>Genres:</h3>
+            <ul>
+                {{#each genres}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <h3>Genres: None Found</h3>
+        {{/if}}
+        {{#if check}}
+            <h3>Percent of viewers that would watch again: Not Available</h3>
+        {{else}}
+            <h3>Percent of viewers that would watch again: {{rewatchPercent}}</h3>
+        {{/if}}
+        {{#if averageRuntime}}
+            <h3>Average Runtime: {{averageRuntime}}</h3>
+        {{else}}
+            <h3>Average Runtime: Not Available</h3>
+        {{/if}}
+    {{/each}}
+{{else}}
+    <h2>No shows found!</h2>
+{{/if}}

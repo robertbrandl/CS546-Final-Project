@@ -11,8 +11,22 @@ router.route('/searchresults').get(async (req, res) => {
       }catch(e){
         return res.status(400)//.render('login', {title: "Login", error: true, msg: "Error: Email is not valid"});
       }
-    let s = await showData.searchForShow(term);
-    return res.render('allshows', {title: "Search Results", shows: s});
+    try{
+        let s = await showData.searchForShow(term);
+        return res.render('allshows', {title: "Search Results", shows: s});
+    }catch{
+        return res.render('allshows', {title: "Search Results", shows: []});
+    }
+});
+router.route('/findmenu').get(async (req, res) => {//Don't Know What to Watch? Menu Route
+    //code here for GET will render the Don't Know What to Watch? Menu
+    return res.render('findmenu', {title: "Don't Know What to Watch?"});
+});
+router.route('/findmenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
+    //code here for POST 
+    //same like the data function, do all error checking
+    //when finished, run the data function, make sure no errors
+    //render the output page called menuresults
 });
 router.route('/').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows
@@ -32,17 +46,9 @@ router.route('/:id').get(async (req, res) => {
     if (s[0].averageRating === 0){
         bool = true;
     }
-    return res.render('individualshow', {title: "Individual Show", show: s, check: bool});
-});
-router.route('/findmenu').get(async (req, res) => {//Don't Know What to Watch? Menu Route
-    //code here for GET will render the Don't Know What to Watch? Menu
-    return res.render('findmenu', {title: "Don't Know What to Watch?"});
-});
-router.route('/findmenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
-    //code here for POST 
-    //same like the data function, do all error checking
-    //when finished, run the data function, make sure no errors
-    //render the output page called menuresults
+    let revs = await showData.getReviewsForShow(s[0]);
+    let simshows = await showData.getSimilarShows(s[0]);
+    return res.render('individualshow', {title: "Individual Show", show: s, check: bool, review: revs, sims: simshows});
 });
 
 
