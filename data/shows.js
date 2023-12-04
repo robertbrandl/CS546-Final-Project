@@ -92,8 +92,10 @@ const getIndividualShow = async (
     apiId
 ) =>{
     let id = validation.checkString(apiId);
+    let numId = parseInt(id);
+    if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) throw "Api Id is not valid";
     const showCollection = await shows();
-    let show = await showCollection.findOne({apiId: id});
+    let show = await showCollection.findOne({apiId: numId});
     if (show === null){
         let res = undefined;
         try{
@@ -182,9 +184,128 @@ const getReviewsForShow = async (
     }
     return arr;
 }
+
+const match = (array1, array2, currId) => {
+    let arr = []
+    for (let obj1 of array1) {
+      for (let obj2 of array2) {
+        if (obj1.apiId === obj2.apiId && obj1.apiId !== currId) {
+          arr.push(obj1);
+        }
+        }
+    }
+    return arr;
+}
 const getSimilarShows = async (
     show
 ) =>{
-
+    const showCollection = await shows();
+    let simshows = [];
+    let genMatches = await showCollection.find({genres: {$in: show.genres}}).toArray();
+    let actorMatches = await showCollection.find({leadActors: {$in: show.leadActors}}).toArray();
+    let dirMatches = await showCollection.find({directors: {$in: show.directors}}).toArray();
+    let prodMatches = await showCollection.find({producers: {$in: show.producers}}).toArray();
+    let runtimeMatches = await showCollection.find({averageRuntime: show.averageRuntime}).toArray();
+    let res1 = match(genMatches, actorMatches, show.apiId);
+    let res2 = match(genMatches, dirMatches, show.apiId);
+    let res3 = match(genMatches, prodMatches, show.apiId);
+    let res4 = match(actorMatches, prodMatches, show.apiId);
+    let res5 = match(genMatches, runtimeMatches, show.apiId);
+    let res6 = match(actorMatches, runtimeMatches, show.apiId);
+    for (let x of res1){ simshows.push(x)}
+    for (let x of res2){ simshows.push(x)}
+    for (let x of res3){ simshows.push(x)}
+    for (let x of res4){ simshows.push(x)}
+    for (let x of res5){ simshows.push(x)}
+    for (let x of res6){ simshows.push(x)}
+    for (let x of genMatches){ simshows.push(x)}
+    simshows = simshows.filter((shows, index, array) => index === array.findIndex((p) => p.apiId === shows.apiId));
+    simshows = simshows.filter((p) => p.apiId !== show.apiId);
+    if (simshows.length < 5){
+        let allshows = await getAllShows();
+        for (let x of allshows){
+            if (simshows.length < 5){
+                let id = x.apiId;
+                console.log(id)
+                let castcrew = undefined;
+                try{
+                    castcrew = await axios.get(`https://api.tvmaze.com/shows/${id}?embed[]=crew&embed[]=cast`);
+                }catch(e){
+                    throw e;
+                }
+                if (castcrew){
+                    let actorArr = [];
+                    for (let x of castcrew.data._embedded.cast){
+                        actorArr.push(x.person.name);
+                    }
+                    actorArr = actorArr.filter((value, index, self) => {
+                        return self.indexOf(value) === index;
+                    });
+                        let directors = [];
+                        let producers = [];
+                        for (let x of castcrew.data._embedded.crew){
+                            if (x.type.toLowerCase().indexOf("producer") >= 0){
+                                producers.push(x.person.name);
+                            }
+                            else if (x.type.toLowerCase().indexOf("director") >= 0){
+                                directors.push(x.person.name);
+                            }
+                        }
+                        producers = producers.filter((value, index, self) => {
+                            return self.indexOf(value) === index;
+                        });
+                        directors = directors.filter((value, index, self) => {
+                            return self.indexOf(value) === index;
+                        });
+                        if (show.leadActors.some((num) => actorArr.includes(num)) && show.apiId !== x.apiId){
+                            if (show.genres.some((num) => x.genres.includes(num))){
+                                simshows.push(x);
+                            }
+                        }
+                        if (show.directors.some((num) => directors.includes(num)) && show.apiId !== x.apiId){
+                            if (show.genres.some((num) => x.genres.includes(num))){
+                                simshows.push(x);
+                            }
+                        }
+                        if (show.producers.some((num) => producers.includes(num)) && show.apiId !== x.apiId){
+                            if (show.genres.some((num) => x.genres.includes(num))){
+                                simshows.push(x);
+                            }
+                        }
+                        if (show.leadActors.some((num) => actorArr.includes(num)) && show.apiId !== x.apiId){
+                            if (show.directors.some((num) => directors.includes(num)) && show.apiId !== x.apiId){
+                                simshows.push(x);
+                            }
+                        }
+                        if (show.leadActors.some((num) => actorArr.includes(num)) && show.apiId !== x.apiId){
+                            if (show.producers.some((num) => producers.includes(num)) && show.apiId !== x.apiId){
+                                simshows.push(x);
+                            }
+                        }
+                        if (show.genres.some((num) => x.genres.includes(num)) && show.apiId !== x.apiId && show.averageRuntime == x.averageRuntime){
+                            simshows.push(x);
+                        }
+                        if (show.genres.some((num) => x.genres.includes(num)) && show.apiId !== x.apiId){
+                            simshows.push(x);
+                        }
+                        if (show.leadActors.some((num) => actorArr.includes(num)) && show.apiId !== x.apiId){
+                            simshows.push(x);
+                        }
+                        if (show.directors.some((num) => directors.includes(num)) && show.apiId !== x.apiId){
+                            simshows.push(x);
+                        }
+                        if (show.producers.some((num) => producers.includes(num)) && show.apiId !== x.apiId){
+                            simshows.push(x);
+                        }
+                }
+                simshows = simshows.filter((show, index, array) => index === array.findIndex((p) => p.apiId === show.apiId));
+                simshows = simshows.filter((p) => p.apiId !== show.apiId);
+            }
+        }
+    }
+    if (simshows.length > 10){
+        simshows = simshows.slice(0, 10);
+    }
+    return simshows;
 }
 export default {getAllShows, searchForShow, sortByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow};
