@@ -11,6 +11,15 @@
 </head>
 <body>
     <h1><a href="/">TV Show Recommender</a></h1>
+    <nav>
+        <a href = "/user/login"> Log-In </a> <br>
+        <a href = "/user/register"> Create an Account </a>
+    </nav>
+    <form id="search-form" method="GET" action="/shows/searchresults"> 
+        <label for="searchTerm">Search for a show:</label> 
+        <input type="text" id="searchTerm" name="searchTerm" required> 
+        <button type="submit">Search</button> 
+    </form> 
     {{{body}}}
 </body>
 </html>
