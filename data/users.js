@@ -110,15 +110,91 @@ const getShowsForUser = async (
     }
     return arr;
 }
-const saveShow = async () => {
+const saveShow = async (
+    user,
+    show
+) => {
+    //updated saved shows array
+    let ss = user.shows
+    ss.push(show._id.toString())
+    
+    //updated user in collection
+    const userCollection = await users();
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        {id: user._id},
+        {$set: {shows: ss}},
+        {returnDocument: 'after'}
+    );
+    if (!updatedInfo) {
+        throw `User not found or could not successfully update saved shows`;
+    }
+    return {changed:true, updatedInfo:updatedInfo} 
 
 }
-const removeShow = async () => {
+const removeShow = async (
+    user,
+    show
+) => {
+    //updated saved shows array
+    let ss = user.shows
+    let index = ss.indexOf(show._id.toString())
+    if (index == -1){
+        throw `Show not found`
+    }
+    ss.splice(index, 1)
 
+    //updated user in collection
+    const userCollection = await users();
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        {id: user._id},
+        {$set: {shows: ss}},
+        {returnDocument: 'after'}
+      );
+    if (!updatedInfo) {
+        throw `User not found or could not successfully update saved shows`;
+    }
+    return {changed:true, updatedInfo:updatedInfo} 
 }
+
 const changePassword = async (
+    user,
+    oldPassword,
     newPassword
 ) => {
+    //old password validation
+    let oldPword = validation.checkString(oldPassword);
+    if (/\s/.test(oldPword)) throw "Old password cannot contain spaces";
+    if (oldPword.length < 8) throw "Old password is not long enough";
+    if ((/[A-Z]/).test(oldPword) === false) throw "Old password must contain an uppercase letter";
+    if (/\d/.test(oldPword) === false) throw "Old password must contain a number";
+    if (/[^a-zA-Z0-9]/.test(oldPword) === false) throw "Old password must contain a special character";
 
+    //new password validation
+    let newPword = validation.checkString(newPassword);
+    if (/\s/.test(newPword)) throw "New password cannot contain spaces";
+    if (newPword.length < 8) throw "New password is not long enough";
+    if ((/[A-Z]/).test(newPword) === false) throw "New password must contain an uppercase letter";
+    if (/\d/.test(newPword) === false) throw "New password must contain a number";
+    if (/[^a-zA-Z0-9]/.test(newPword) === false) throw "New password must contain a special character";
+    //hash new password
+    const hash = await bcrypt.hash(newPword, saltRounds);
+
+    //old password comparison
+    const userCollection = await users();
+    let foundUser = await userCollection.findOne({id: user._id});
+    if (!foundUser) throw "User not found";
+    let match = await bcrypt.compare(oldPword, foundUser.password);
+    if (!match) throw "Old Password is incorrect";
+
+    //update with new password
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        {id: user._id},
+        {$set: { password: hash }},
+        {returnDocument: 'after'}
+      );
+    if (!updatedInfo) {
+        throw `User not found or could not successfully update password`;
+    }
+    return {changed:true, updatedInfo:updatedInfo} 
 }
 export default {registerUser, loginUser, getUser, saveShow, removeShow, changePassword, getReviewsForUser, getShowsForUser};
