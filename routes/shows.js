@@ -9,13 +9,28 @@ router.route('/searchresults').get(async (req, res) => {
     try{
         term = validation.checkString(body);
       }catch(e){
-        return res.status(400)//.render('login', {title: "Login", error: true, msg: "Error: Email is not valid"});
+        if (req.session.user){
+            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Search Term cannot be empty and must be a valid string"});
+        }
+        else{
+            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Search Term cannot be empty and must be a valid string"});
+        }
       }
     try{
         let s = await showData.searchForShow(term);
-        return res.render('allshows', {title: "Search Results", shows: s});
+        if (req.session.user){
+            return res.render('allshows', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: s});
+        }
+        else{
+            return res.render('allshows', {title: "Search Results", notLoggedIn: true, shows: s});
+        }
     }catch{
-        return res.render('allshows', {title: "Search Results", shows: []});
+        if (req.session.user){
+            return res.render('allshows', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: []});
+        }
+        else{
+            return res.render('allshows', {title: "Search Results", notLoggedIn: true, shows: []});
+        }
     }
 });
 router.route('/findmenu').get(async (req, res) => {//Don't Know What to Watch? Menu Route
@@ -30,25 +45,84 @@ router.route('/findmenu').post(async (req, res) => {//Don't Know What to Watch? 
 });
 router.route('/').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows
-    let s = await showData.getAllShows();
-    return res.render('allshows', {title: "TV Show List", shows: s});
+    let s = undefined;
+    try{
+        s = await showData.getAllShows();
+    }catch(e){
+        let codenum = parseInt(e.substring(0,3));
+        if (req.session.user){
+            return res.status(codenum).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: codenum, errorText: e.substring(3)})
+        }
+        else{
+            return res.status(codenum).render("error", {title: "Error", notLoggedIn: true, code: codenum, errorText: e.substring(3)})
+        }
+    }
+    if (req.session.user){
+        return res.render('allshows', {title: "TV Show List", notLoggedIn: false, firstName: req.session.user.firstName, shows: s});
+    }
+    else{
+        return res.render('allshows', {title: "TV Show List", notLoggedIn: true, shows: s});
+    }
 });
 router.route('/:id').get(async (req, res) => {
     //code here for GET will render the individual TV Show page
     let id = req.params.id;
     try{
         id = validation.checkString(id);
+        let numId = parseInt(id);
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {}
     }catch(e){
-        return res.status(400)//.render("error", {title: "Error", status: 400, message: "Search id is not valid"})
+        if (req.session.user){
+            return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})
+        }
+        else{
+            return res.status(400).render("error", {title: "Error", notLoggedIn: true, code: 400, errorText: "Show apiId is not valid or not a number"})
+        }
     }
-    let s = [await showData.getIndividualShow(id)];
+    let s = undefined;
+    try{
+        s = [await showData.getIndividualShow(id)];
+    }catch(e){
+        let codenum = parseInt(e.substring(0,3));
+        if (req.session.user){
+            return res.status(codenum).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: codenum, errorText: e.substring(3)});
+        }
+        else{
+            return res.status(codenum).render("error", {title: "Error", notLoggedIn: true, code: codenum, errorText: e.substring(3)});
+        }
+    }
     let bool = false;
     if (s[0].averageRating === 0){
         bool = true;
     }
-    let revs = await showData.getReviewsForShow(s[0]);
-    let simshows = await showData.getSimilarShows(s[0]);
-    return res.render('individualshow', {title: "Individual Show", show: s, check: bool, review: revs, sims: simshows});
+    let revs = undefined;
+    try{
+        revs = await showData.getReviewsForShow(s[0]);
+    }catch(e){
+        if (req.session.user){
+            return res.status(500).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 500, errorText: e})
+        }
+        else{
+            return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
+        }
+    }
+    let simshows = undefined;
+    try{
+        simshows = await showData.getSimilarShows(s[0]);
+    }catch(e){
+        if (req.session.user){
+            return res.status(500).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 500, errorText: e})
+        }
+        else{
+            return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
+        }
+    }
+    if (req.session.user){
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: false, firstName: req.session.user.firstName, show: s, check: bool, review: revs, sims: simshows});
+    }
+    else{
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, show: s, check: bool, review: revs, sims: simshows});
+    }
 });
 
 
