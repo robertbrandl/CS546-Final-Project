@@ -9,9 +9,9 @@ const getAllShows = async () => {
     try{
         showsres = await axios.get(`https://api.tvmaze.com/shows`);
     }catch(e){
-        throw e;
+        throw "500"+e;
     }
-    if (!showsres || showsres.data.length <= 0){throw "No shows found"}
+    if (!showsres || showsres.data.length <= 0){throw "404No shows found"}
     let arr = [];
     const showCollection = await shows();
     for (let x of showsres.data){
@@ -101,16 +101,16 @@ const getIndividualShow = async (
         try{
             res = await axios.get(`https://api.tvmaze.com/shows/${apiId}`);
         }catch(e){
-            throw e;
+            throw "500"+e;
         }
-        if (!res || res.data.length <= 0){throw "No show found with that apiId"}
+        if (!res || res.data.length <= 0){throw "404No show found with that apiId"}
         let cast = undefined;
         try{
             cast = await axios.get(`https://api.tvmaze.com/shows/${apiId}/cast`);
         }catch(e){
             throw e;
         }
-        if (!cast || cast.data.length <= 0){throw "No show found with that apiId"}
+        if (!cast || cast.data.length <= 0){throw "404No show found with that apiId"}
         let actorArr = [];
         for (let x of cast.data){
             actorArr.push(x.person.name);
@@ -124,7 +124,7 @@ const getIndividualShow = async (
         }catch(e){
             throw e;
         }
-        if (!crew || crew.data.length <= 0){throw "No show found with that apiId"}
+        if (!crew || crew.data.length <= 0){throw "404No show found with that apiId"}
         let directors = [];
         let producers = [];
         for (let x of crew.data){
@@ -157,7 +157,7 @@ const getIndividualShow = async (
         };
         const insertInfo = await showCollection.insertOne(newShow);
         if (!insertInfo.acknowledged || !insertInfo.insertedId)
-            throw 'Could not add show';
+            throw '500Could not add show';
         const newId = insertInfo.insertedId.toString();
         const show = await showCollection.findOne({_id: new ObjectId(newId)});
         return show;
@@ -173,7 +173,7 @@ const getReviewsForShow = async (
     const reviewCollection = await reviews();
     let arr = [];
     for (let x of revs){
-        const review = undefined;
+        let review = undefined;
         if (typeof x === "string"){
             review = await reviewCollection.findOne({_id: new ObjectId(x)});
         }
@@ -212,12 +212,20 @@ const getSimilarShows = async (
     let res4 = match(actorMatches, prodMatches, show.apiId);
     let res5 = match(genMatches, runtimeMatches, show.apiId);
     let res6 = match(actorMatches, runtimeMatches, show.apiId);
+    let res7 = match(actorMatches, dirMatches, show.apiId);
+    let res8 = match(dirMatches, prodMatches, show.apiId);
+    let res9 = match(dirMatches, runtimeMatches, show.apiId);
+    let res10 = match(prodMatches, runtimeMatches, show.apiId);
     for (let x of res1){ simshows.push(x)}
     for (let x of res2){ simshows.push(x)}
     for (let x of res3){ simshows.push(x)}
     for (let x of res4){ simshows.push(x)}
     for (let x of res5){ simshows.push(x)}
     for (let x of res6){ simshows.push(x)}
+    for (let x of res7){ simshows.push(x)}
+    for (let x of res8){ simshows.push(x)}
+    for (let x of res9){ simshows.push(x)}
+    for (let x of res10){ simshows.push(x)}
     for (let x of genMatches){ simshows.push(x)}
     simshows = simshows.filter((shows, index, array) => index === array.findIndex((p) => p.apiId === shows.apiId));
     simshows = simshows.filter((p) => p.apiId !== show.apiId);
@@ -226,7 +234,6 @@ const getSimilarShows = async (
         for (let x of allshows){
             if (simshows.length < 5){
                 let id = x.apiId;
-                console.log(id)
                 let castcrew = undefined;
                 try{
                     castcrew = await axios.get(`https://api.tvmaze.com/shows/${id}?embed[]=crew&embed[]=cast`);
@@ -279,6 +286,11 @@ const getSimilarShows = async (
                         }
                         if (show.leadActors.some((num) => actorArr.includes(num)) && show.apiId !== x.apiId){
                             if (show.producers.some((num) => producers.includes(num)) && show.apiId !== x.apiId){
+                                simshows.push(x);
+                            }
+                        }
+                        if (show.producers.some((num) => producers.includes(num)) && show.apiId !== x.apiId){
+                            if (show.directors.some((num) => directors.includes(num)) && show.apiId !== x.apiId){
                                 simshows.push(x);
                             }
                         }

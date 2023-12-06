@@ -1,6 +1,30 @@
 <h1>{{title}}</h1>
 <h2>First Name: {{firstName}}</h2>
 <h2>Last Name: {{lastName}}</h2>
+<h2>Your Reviews: </h2>
+{{#if review}}
+    {{#each review}}
+        <h3>{{title}}</h3>
+        <h4>By: {{authorFirstName}} {{authorLastName}}</h4>
+        <h4>Rating: {{rating}}</h4>
+        <p>{{content}}</p>
+        {{#if watchAgain}}
+            <h4>Would you watch again? YES!</h4>
+        {{else}}
+            <h4>Would you watch again? NO!</h4>
+        {{/if}}
+    {{/each}}
+{{else}}
+    <h3>None Posted Yet!</h3>
+{{/if}}
+<h2>Your Want to Watch List: </h2>
+{{#if savedshows}}
+    {{#each savedshows}}
+        <h3>{{name}}</h3>
+    {{/each}}
+{{else}}
+    <h3>No shows added yet!</h3>
+{{/if}}
 //show all reviews, with button to edit and delete each one
 //change password button
 //show all saved shows, with button to delete each one off list

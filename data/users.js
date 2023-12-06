@@ -1,6 +1,8 @@
 import * as validation from "../validation.js";
 import {ObjectId} from 'mongodb';
 import {users} from '../config/mongoCollections.js';
+import {reviews} from '../config/mongoCollections.js';
+import {shows} from '../config/mongoCollections.js';
 import validator from 'email-validator';
 import bcrypt from 'bcrypt';
 const saltRounds = 16;
@@ -61,8 +63,52 @@ const loginUser = async (
     if (!match) throw "Either the email address or password is invalid";
     return foundUser;
 }
-const getUser = async () => {
-
+const getUser = async (
+    emailAddress
+) => {
+    let email = validation.checkString(emailAddress);
+    email = email.toLowerCase();
+    const userCollection = await users();
+    if (validator.validate(email) === false){throw "Invalid email"}
+    let foundUser = await userCollection.findOne({emailAddress: email});
+    delete foundUser.password;
+    return foundUser;
+}
+const getReviewsForUser = async (
+    user
+)=>{
+    let revs = user.reviews;
+    const reviewCollection = await reviews();
+    let arr = [];
+    for (let x of revs){
+        let review = undefined;
+        if (typeof x === "string"){
+            review = await reviewCollection.findOne({_id: new ObjectId(x)});
+        }
+        else{
+            review = await reviewCollection.findOne({_id: x});
+        }
+        arr.push(review);
+    }
+    return arr;
+}
+const getShowsForUser = async (
+    user
+)=>{
+    let ss = user.shows;
+    const showsCollection = await shows();
+    let arr = [];
+    for (let x of ss){
+        let show = undefined;
+        if (typeof x === "string"){
+            show = await showsCollection.findOne({_id: new ObjectId(x)});
+        }
+        else{
+            show = await showsCollection.findOne({_id: x});
+        }
+        arr.push(show);
+    }
+    return arr;
 }
 const saveShow = async () => {
 
@@ -75,4 +121,4 @@ const changePassword = async (
 ) => {
 
 }
-export default {registerUser, loginUser, getUser, saveShow, removeShow, changePassword};
+export default {registerUser, loginUser, getUser, saveShow, removeShow, changePassword, getReviewsForUser, getShowsForUser};
