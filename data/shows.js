@@ -2,6 +2,7 @@ import * as validation from "../validation.js";
 import {ObjectId} from 'mongodb';
 import {shows} from '../config/mongoCollections.js';
 import {reviews} from '../config/mongoCollections.js';
+import {users} from '../config/mongoCollections.js';
 import axios from 'axios';
 
 const getAllShows = async () => {
@@ -320,4 +321,13 @@ const getSimilarShows = async (
     }
     return simshows;
 }
-export default {getAllShows, searchForShow, sortByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow};
+const getUserSimiliarShows = async (
+    emailAddress
+) => {
+    let email = validation.checkString(emailAddress);
+    email = email.toLowerCase();
+    const userCollection = await users();
+    let foundUser = await userCollection.findOne({emailAddress: email});
+    return foundUser.shows;
+}
+export default {getAllShows, searchForShow, sortByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows};

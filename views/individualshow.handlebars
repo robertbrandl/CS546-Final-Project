@@ -1,6 +1,12 @@
-add button to add review, add button to save show,
+add button to add review
 {{#each show}}
     <h1>{{name}}</h1>
+    {{#if ../save}}
+        <form id="saveShowForm" action="/user/saveshow/{{apiId}}" method="GET">
+            <label for="saveShowButton">Save this show:</label> 
+            <button type="submit" id="saveShowButton">Save Show</button>
+        </form>
+    {{/if}}
     {{#if plot}}
         <p>Plot Synopsis: {{{plot}}}</p>
     {{else}}
