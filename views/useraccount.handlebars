@@ -21,6 +21,10 @@
 {{#if savedshows}}
     {{#each savedshows}}
         <h3>{{name}}</h3>
+        <form id="removeShowForm" action="/user/removeshow/{{apiId}}" method="GET">
+            <label for="removeShowButton">Remove this show:</label> 
+            <button type="submit" id="removeShowButton">Delete Show</button>
+        </form>
     {{/each}}
 {{else}}
     <h3>No shows added yet!</h3>

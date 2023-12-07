@@ -118,10 +118,16 @@ router.route('/:id').get(async (req, res) => {
         }
     }
     if (req.session.user){
-        return res.render('individualshow', {title: "Individual Show", notLoggedIn: false, firstName: req.session.user.firstName, show: s, check: bool, review: revs, sims: simshows});
+        let userSim = await showData.getUserSimiliarShows(req.session.user.emailAddress);
+        if (userSim.includes((s[0]._id).toString())) {
+            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: false, check: bool, review: revs, sims: simshows});
+        }
+        else{
+            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: true, check: bool, review: revs, sims: simshows});
+        }
     }
     else{
-        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, show: s, check: bool, review: revs, sims: simshows});
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows});
     }
 });
 

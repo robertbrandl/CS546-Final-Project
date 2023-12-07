@@ -163,4 +163,92 @@ router
         return res.status(401).render("error", {title: "Error", notLoggedIn: true, code: 401, errorText: "Error: You must be logged in to access this page."})
     }
   })
+router.route('/logout').get(async (req, res) => {
+    //code here for GET
+    req.session.destroy();
+    return res.redirect("/");
+  });
+router
+  .route('/saveshow/:id')
+  .get(async (req, res) => {
+    let id = req.params.id;
+    try{
+        id = validation.checkString(id);
+        let numId = parseInt(id);
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {}
+    }catch(e){
+        if (req.session.user){
+            return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})
+        }
+        else{
+            return res.status(400).render("error", {title: "Error", notLoggedIn: true, code: 400, errorText: "Show apiId is not valid or not a number"})
+        }
+    }
+    if (req.session.user){
+        let user = undefined;
+        try{
+            user = await userData.getUser(req.session.user.emailAddress);
+        }catch(e){
+            return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "User cannot be found"});
+        }
+        let show = undefined;
+        try{
+            show = await userData.getShow(id);
+        }catch(e){
+            return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "Show cannot be found"});
+        }
+        try{
+            let res = await userData.saveShow(user, show);
+            if (res.changed === false){
+                return res.status(409).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 409, errorText: "Show is already saved!"});
+            }
+        }catch(e){
+            return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: e});
+        }
+        return res.redirect(`/shows/${id}`);
+    }
+    else{
+        return res.redirect(`/shows/${id}`);
+    }
+  })
+router
+  .route('/removeshow/:id')
+  .get(async (req, res) => {
+    let id = req.params.id;
+    try{
+        id = validation.checkString(id);
+        let numId = parseInt(id);
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {}
+    }catch(e){
+        if (req.session.user){
+            return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})
+        }
+        else{
+            return res.status(400).render("error", {title: "Error", notLoggedIn: true, code: 400, errorText: "Show apiId is not valid or not a number"})
+        }
+    }
+    if (req.session.user){
+        let user = undefined;
+        try{
+            user = await userData.getUser(req.session.user.emailAddress);
+        }catch(e){
+            return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "User cannot be found"});
+        }
+        let show = undefined;
+        try{
+            show = await userData.getShow(id);
+        }catch(e){
+            return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "Show cannot be found"});
+        }
+        try{
+            await userData.removeShow(user, show);
+        }catch(e){
+            return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: e});
+        }
+        return res.redirect(`/user/account`);
+    }
+    else{
+        return res.redirect(`/user/account`);
+    }
+  })
 export default router;

@@ -74,6 +74,21 @@ const getUser = async (
     delete foundUser.password;
     return foundUser;
 }
+const getShow = async (
+    apiId
+) =>{
+    let id = validation.checkString(apiId);
+    let numId = parseInt(id);
+    if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) throw "Api Id is not valid";
+    const showCollection = await shows();
+    let show = await showCollection.findOne({apiId: numId});
+    if (show === null){
+        throw "Show not found";
+    }
+    else{
+        return show;
+    }
+}
 const getReviewsForUser = async (
     user
 )=>{
@@ -115,20 +130,25 @@ const saveShow = async (
     show
 ) => {
     //updated saved shows array
-    let ss = user.shows
-    ss.push(show._id.toString())
-    
-    //updated user in collection
-    const userCollection = await users();
-    const updatedInfo = await userCollection.findOneAndUpdate(
-        {id: user._id},
-        {$set: {shows: ss}},
-        {returnDocument: 'after'}
-    );
-    if (!updatedInfo) {
-        throw `User not found or could not successfully update saved shows`;
+    let ss = user.shows;
+    if (!ss.includes(show._id.toString())) {
+        ss.push(show._id.toString());
+        
+        //updated user in collection
+        const userCollection = await users();
+        const updatedInfo = await userCollection.findOneAndUpdate(
+            {_id: user._id},
+            {$set: {shows: ss}},
+            {returnDocument: 'after'}
+        );
+        if (!updatedInfo) {
+            throw `User not found or could not successfully update saved shows`;
+        }
+        return {changed:true, updatedInfo:updatedInfo} 
     }
-    return {changed:true, updatedInfo:updatedInfo} 
+    else{
+        return {changed:false, updatedInfo:updatedInfo}
+    }
 
 }
 const removeShow = async (
@@ -146,7 +166,7 @@ const removeShow = async (
     //updated user in collection
     const userCollection = await users();
     const updatedInfo = await userCollection.findOneAndUpdate(
-        {id: user._id},
+        {_id: user._id},
         {$set: {shows: ss}},
         {returnDocument: 'after'}
       );
@@ -197,4 +217,4 @@ const changePassword = async (
     }
     return {changed:true, updatedInfo:updatedInfo} 
 }
-export default {registerUser, loginUser, getUser, saveShow, removeShow, changePassword, getReviewsForUser, getShowsForUser};
+export default {registerUser, loginUser, getUser, saveShow, removeShow, changePassword, getReviewsForUser, getShowsForUser, getShow};
