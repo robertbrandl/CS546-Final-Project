@@ -342,4 +342,4 @@ const getUserSimiliarShows = async (
     let foundUser = await userCollection.findOne({emailAddress: email});
     return foundUser.shows;
 }
-export default {getAllShows, searchForShow, sortByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows};
+export default {getAllShows, searchForShow, filterByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows};
