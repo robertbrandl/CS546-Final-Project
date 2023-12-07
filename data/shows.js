@@ -3,7 +3,7 @@ import {ObjectId} from 'mongodb';
 import {shows} from '../config/mongoCollections.js';
 import {reviews} from '../config/mongoCollections.js';
 import {users} from '../config/mongoCollections.js';
-import axios from 'axios';
+import axios, { getAdapter } from 'axios';
 
 const getAllShows = async () => {
     let showsres = undefined;
@@ -77,17 +77,28 @@ const findMenu = async(
     //then save the cast in a variable, like let cast = result.data and iterate through each element in cast, like x.person.name and see if it matches the top actors entered in the menu
     //5) return array with up to 5 show objects like in getAllShows
 }
-const sortByGenre = async () => {
-
+const filterByGenre = async (filteredGenre) => {
+    filteredGenre = validation.checkString(filteredGenre)
+    let shows = await getAllShows()
+    let filtered = shows.filter(show => {
+        show.genres.some(genre => genre.toLowerCase() === filteredGenre.toLowerCase())
+    })
+    return filtered
 }
 const sortByRuntime = async () => {
-
+    let shows = await getAllShows()
+    shows.sort((a, b) => a.averageRuntime - b.averageRuntime)
+    return shows
 }
 const sortByRating = async () => {
-
+    let shows = await getAllShows()
+    shows.sort((a, b) => a.rating - b.rating)
+    return shows
 }
 const sortByRewatchPercent = async () => {
-
+    let shows = await getAllShows()
+    shows.sort((a, b) => a.rewatchPercent - b.rewatchPercent)
+    return shows
 }
 const getIndividualShow = async (
     apiId
@@ -321,6 +332,7 @@ const getSimilarShows = async (
     }
     return simshows;
 }
+
 const getUserSimiliarShows = async (
     emailAddress
 ) => {
