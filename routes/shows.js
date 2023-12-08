@@ -43,6 +43,68 @@ router.route('/findmenu').post(async (req, res) => {//Don't Know What to Watch? 
     //when finished, run the data function, make sure no errors
     //render the output page called menuresults
 });
+router.route('/filter').get(async (req, res) => {
+    //code here for GET will render the page with all TV Shows with the inputted genre
+    let body = req.query.filterGenre;
+    let genre = "";
+    try{
+        genre = validation.checkString(body);
+      }catch(e){
+        if (req.session.user){
+            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Genre Search Term cannot be empty and must be a valid string"});
+        }
+        else{
+            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Genre Search Term cannot be empty and must be a valid string"});
+        }
+      }
+    try{
+        let s = await showData.filterByGenre(genre);
+        if (req.session.user){
+            return res.render('allshows', {title: "Filterd TV Shows", notLoggedIn: false, firstName: req.session.user.firstName, shows: s});
+        }
+        else{
+            return res.render('allshows', {title: "Filtered TV Shows", notLoggedIn: true, shows: s});
+        }
+    }catch{
+        if (req.session.user){
+            return res.render('allshows', {title: "Filtered TV Shows", notLoggedIn: false, firstName: req.session.user.firstName, shows: []});
+        }
+        else{
+            return res.render('allshows', {title: "Filtered TV Shows", notLoggedIn: true, shows: []});
+        }
+    }
+});
+router.route('/sort').get(async (req, res) => {
+    //code here for GET will render the page with all TV Shows with the selected feature
+    let body = req.query.sortFeature;
+    let feature = "";
+    try{
+        feature = validation.checkString(body);
+      }catch(e){
+        if (req.session.user){
+            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Feature cannot be empty and must be a valid string"});
+        }
+        else{
+            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Feature cannot be empty and must be a valid string"});
+        }
+      }
+    try{
+        let s = await showData.sortByFeature(feature);
+        if (req.session.user){
+            return res.render('allshows', {title: "Sorted TV Shows", notLoggedIn: false, firstName: req.session.user.firstName, shows: s});
+        }
+        else{
+            return res.render('allshows', {title: "Sorted TV Shows", notLoggedIn: true, shows: s});
+        }
+    }catch{
+        if (req.session.user){
+            return res.render('allshows', {title: "Sorted TV Shows", notLoggedIn: false, firstName: req.session.user.firstName, shows: []});
+        }
+        else{
+            return res.render('allshows', {title: "Sorted TV Shows", notLoggedIn: true, shows: []});
+        }
+    }
+});
 router.route('/').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows
     let s = undefined;
@@ -130,6 +192,7 @@ router.route('/:id').get(async (req, res) => {
         return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows});
     }
 });
+
 
 
 export default router;

@@ -1,4 +1,19 @@
 <h1>{{title}}</h1>
+<h2>Filter or sort all shows here</h2>
+<form id="filter-form" method="GET" action="/shows/filter"> 
+    <label for="filterGenre">Filter all shows by genre:</label> 
+    <input type="text" id="filterGenre" name="filterGenre" required> 
+    <button type="submit">Filter</button> 
+</form> 
+<form id="sort-form" method="GET" action="/shows/sort"> 
+    <label for="sortFeature">Sort all shows by feature:</label> 
+    <select id="sortFeature" name="sortFeature">
+          <option value="runtime">Runtime</option>
+          <option value="rating">Rating</option>
+          <option value="rewatch">Rewatch Percent</option>
+    </select>
+    <button type="submit">Sort</button> 
+</form> 
 {{#if shows}}
     {{#each shows}}
         <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>

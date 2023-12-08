@@ -81,25 +81,28 @@ const filterByGenre = async (filteredGenre) => {
     filteredGenre = validation.checkString(filteredGenre)
     let shows = await getAllShows()
     let filtered = shows.filter(show => {
-        show.genres.some(genre => genre.toLowerCase() === filteredGenre.toLowerCase())
+        return show.genres.some(genre => genre.toLowerCase() === filteredGenre.toLowerCase())
     })
+    if (!filtered || filtered.length <= 0){throw "No shows with that genre"}
     return filtered
 }
-const sortByRuntime = async () => {
+const sortByFeature = async(feature) => {
     let shows = await getAllShows()
-    shows.sort((a, b) => a.averageRuntime - b.averageRuntime)
+    feature = validation.checkString(feature)
+    if(feature.toLowerCase() === "runtime"){
+        shows.sort((a, b) => a.averageRuntime - b.averageRuntime)
+    }
+    else if(feature.toLowerCase() === "rating"){
+        shows.sort((a, b) => a.rating - b.rating)
+    }
+    else if(feature.toLowerCase() === "rewatch"){
+        shows.sort((a, b) => a.rewatchPercent - b.rewatchPercent)
+    }else{
+        throw `Not a valid search feature`
+    }
     return shows
 }
-const sortByRating = async () => {
-    let shows = await getAllShows()
-    shows.sort((a, b) => a.rating - b.rating)
-    return shows
-}
-const sortByRewatchPercent = async () => {
-    let shows = await getAllShows()
-    shows.sort((a, b) => a.rewatchPercent - b.rewatchPercent)
-    return shows
-}
+
 const getIndividualShow = async (
     apiId
 ) =>{
@@ -342,4 +345,4 @@ const getUserSimiliarShows = async (
     let foundUser = await userCollection.findOne({emailAddress: email});
     return foundUser.shows;
 }
-export default {getAllShows, searchForShow, filterByGenre, sortByRating, sortByRuntime, sortByRewatchPercent, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows};
+export default {getAllShows, searchForShow, filterByGenre, sortByFeature, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows};
