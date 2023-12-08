@@ -1,6 +1,8 @@
 <h1>{{title}}</h1>
 <h2>First Name: {{firstName}}</h2>
 <h2>Last Name: {{lastName}}</h2>
+<label for="changePasswordButton">Click here if you would like to change your password to login:</label>
+<button id="changePasswordButton"><a href="/user/changepassword">Change your password.</a></button>
 <h2>Your Reviews: </h2>
 {{#if review}}
     {{#each review}}
@@ -31,4 +33,3 @@
 {{/if}}
 //show all reviews, with button to edit and delete each one
 //change password button
-//show all saved shows, with button to delete each one off list

@@ -60,7 +60,7 @@ router
     try{
       cpword = validation.checkString(createUserData.confirmPasswordInput);
     }catch(e){
-      return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: Confirm password does not match password"});
+      return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error:Confirm password does not match password"});
     }
     if (pword !== cpword) return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: Confirm password does not match password"});
     let result = undefined;
@@ -160,7 +160,7 @@ router
         return res.render('useraccount', {title: "User Account", notLoggedIn: false, firstName: req.session.user.firstName, lastName: req.session.user.lastName, reviews: revs, savedshows: ss });
     }
     else{
-        return res.status(401).render("error", {title: "Error", notLoggedIn: true, code: 401, errorText: "Error: You must be logged in to access this page."})
+        return res.status(401).render("error", {title: "Error", notLoggedIn: true, code: 401, errorText: "You must be logged in to access this page."})
     }
   })
 router.route('/logout').get(async (req, res) => {
@@ -251,4 +251,61 @@ router
         return res.redirect(`/user/account`);
     }
   })
+
+router
+  .route('/changepassword')
+  .get(async (req, res) => {
+    if (req.session.user){
+        return res.render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName});
+    }
+    else{
+        return res.status(401).render("error", {title: "Error", notLoggedIn: true, code: 401, errorText: "You must be logged in to access this page"});
+    }
+  })
+  .post(async (req, res) => {
+    //code here for POST
+    if (req.session.user){
+        const createUserData = req.body;
+        if (!createUserData || Object.keys(createUserData).length === 0) {
+        return res
+            .status(400)
+            .render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Must enter data for the fields"});
+        }
+        let oldpword = "";
+        try{
+            oldpword = validation.checkString(createUserData.oldPasswordInput);
+        }catch(e){
+            return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password is not valid"});
+        }
+        if (/\s/.test(oldpword)) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password cannot contain spaces"});
+        if (oldpword.length < 8) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password is not long enough"});
+        if ((/[A-Z]/).test(oldpword) === false) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password must contain an uppercase letter"});
+        if (/\d/.test(oldpword) === false) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password must contain a number"});
+        if (/[^a-zA-Z0-9]/.test(oldpword) === false) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password must contain a special character"});
+        let newpword = "";
+        try{
+            newpword = validation.checkString(createUserData.newPasswordInput);
+        }catch(e){
+            return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password is not valid"});
+        }
+        if (/\s/.test(newpword)) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: New Password cannot contain spaces"});
+        if (newpword.length < 8) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: New Password is not long enough"});
+        if ((/[A-Z]/).test(newpword) === false) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: New Password must contain an uppercase letter"});
+        if (/\d/.test(newpword) === false) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: New Password must contain a number"});
+        if (/[^a-zA-Z0-9]/.test(newpword) === false) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: New Password must contain a special character"});
+        if (oldpword === newpword) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: New password cannot be the same as your current password"});
+        let user = await userData.getUser(req.session.user.emailAddress);
+        let result = undefined;
+        try{
+            result = await userData.changePassword(user, oldpword, newpword);
+            return res.redirect("/user/account");
+        }catch(e){
+            let codenum = parseInt(e.substring(0,3));
+            return res.status(codenum).render("changepassword", {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, msg: "Error: " + e.substring(5)})
+        }
+    }
+    else{
+        return res.status(401).render("error", {title: "Error", notLoggedIn: true, code: 401, errorText: "You must be logged in to access this page"});
+    }
+    })
 export default router;

@@ -183,37 +183,40 @@ const changePassword = async (
 ) => {
     //old password validation
     let oldPword = validation.checkString(oldPassword);
-    if (/\s/.test(oldPword)) throw "Old password cannot contain spaces";
-    if (oldPword.length < 8) throw "Old password is not long enough";
-    if ((/[A-Z]/).test(oldPword) === false) throw "Old password must contain an uppercase letter";
-    if (/\d/.test(oldPword) === false) throw "Old password must contain a number";
-    if (/[^a-zA-Z0-9]/.test(oldPword) === false) throw "Old password must contain a special character";
+    if (/\s/.test(oldPword)) throw "400: Old password cannot contain spaces";
+    if (oldPword.length < 8) throw "400: Old password is not long enough";
+    if ((/[A-Z]/).test(oldPword) === false) throw "400: Old password must contain an uppercase letter";
+    if (/\d/.test(oldPword) === false) throw "400: Old password must contain a number";
+    if (/[^a-zA-Z0-9]/.test(oldPword) === false) throw "400: Old password must contain a special character";
 
     //new password validation
     let newPword = validation.checkString(newPassword);
-    if (/\s/.test(newPword)) throw "New password cannot contain spaces";
-    if (newPword.length < 8) throw "New password is not long enough";
-    if ((/[A-Z]/).test(newPword) === false) throw "New password must contain an uppercase letter";
-    if (/\d/.test(newPword) === false) throw "New password must contain a number";
-    if (/[^a-zA-Z0-9]/.test(newPword) === false) throw "New password must contain a special character";
+    if (/\s/.test(newPword)) throw "400: New password cannot contain spaces";
+    if (newPword.length < 8) throw "400: New password is not long enough";
+    if ((/[A-Z]/).test(newPword) === false) throw "400: New password must contain an uppercase letter";
+    if (/\d/.test(newPword) === false) throw "400: New password must contain a number";
+    if (/[^a-zA-Z0-9]/.test(newPword) === false) throw "400: New password must contain a special character";
     //hash new password
-    const hash = await bcrypt.hash(newPword, saltRounds);
+    const hashnew = await bcrypt.hash(newPword, saltRounds);
 
     //old password comparison
     const userCollection = await users();
-    let foundUser = await userCollection.findOne({id: user._id});
-    if (!foundUser) throw "User not found";
+    let foundUser = await userCollection.findOne({_id: user._id});
+    if (!foundUser) throw "404: User not found";
     let match = await bcrypt.compare(oldPword, foundUser.password);
-    if (!match) throw "Old Password is incorrect";
+    if (!match) throw "400: Current Password does not match your stored current password.";
+
+    let same = await bcrypt.compare(newPword, foundUser.password);
+    if (same) throw "400: New Password matches your stored current password.";
 
     //update with new password
     const updatedInfo = await userCollection.findOneAndUpdate(
-        {id: user._id},
-        {$set: { password: hash }},
+        {_id: user._id},
+        {$set: { password: hashnew }},
         {returnDocument: 'after'}
       );
     if (!updatedInfo) {
-        throw `User not found or could not successfully update password`;
+        throw `500: User not found or could not successfully update password`;
     }
     return {changed:true, updatedInfo:updatedInfo} 
 }
