@@ -301,7 +301,7 @@ router
             return res.redirect("/user/account");
         }catch(e){
             let codenum = parseInt(e.substring(0,3));
-            return res.status(codenum).render("changepassword", {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, msg: "Error: " + e.substring(5)})
+            return res.status(codenum).render("changepassword", {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: " + e.substring(5)})
         }
     }
     else{

@@ -3,16 +3,18 @@
 <form id="filter-form" method="GET" action="/shows/filter"> 
     <label for="filterGenre">Filter all shows by genre:</label> 
     <input type="text" id="filterGenre" name="filterGenre" required> 
-    <button type="submit">Filter</button> 
+    <label for="filterSubmitButton">Submit your filter choice:</label> 
+    <button type="submit" id="filterSubmitButton">Filter</button> 
 </form> 
 <form id="sort-form" method="GET" action="/shows/sort"> 
-    <label for="sortFeature">Sort all shows by feature:</label> 
+    <label for="sortFeature">Sort all shows by feature (from lowest to highest):</label> 
     <select id="sortFeature" name="sortFeature">
           <option value="runtime">Runtime</option>
           <option value="rating">Rating</option>
           <option value="rewatch">Rewatch Percent</option>
     </select>
-    <button type="submit">Sort</button> 
+    <label for="sortSubmitButton">Submit your sort choice:</label> 
+    <button type="submit" id="sortSubmitButton">Sort</button> 
 </form> 
 {{#if shows}}
     {{#each shows}}
