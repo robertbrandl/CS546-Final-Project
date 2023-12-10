@@ -3,7 +3,7 @@ import {ObjectId} from 'mongodb';
 import {shows} from '../config/mongoCollections.js';
 import {reviews} from '../config/mongoCollections.js';
 import {users} from '../config/mongoCollections.js';
-import axios, { getAdapter } from 'axios';
+import axios from 'axios';
 
 const getAllShows = async () => {
     let showsres = undefined;
@@ -77,17 +77,19 @@ const findMenu = async(
     //then save the cast in a variable, like let cast = result.data and iterate through each element in cast, like x.person.name and see if it matches the top actors entered in the menu
     //5) return array with up to 5 show objects like in getAllShows
 }
-const filterByGenre = async (filteredGenre) => {
+const filterByGenre = async (filteredGenre, s) => {
     filteredGenre = validation.checkString(filteredGenre)
-    let shows = await getAllShows()
+    let shows = s;
+    if (s.length == 0) shows = await getAllShows()
     let filtered = shows.filter(show => {
         return show.genres.some(genre => genre.toLowerCase() === filteredGenre.toLowerCase())
     })
     if (!filtered || filtered.length <= 0){throw "No shows with that genre"}
     return filtered
 }
-const sortByFeature = async(feature) => {
-    let shows = await getAllShows()
+const sortByFeature = async(feature, s) => {
+    let shows = s;
+    if (s.length == 0) shows = await getAllShows()
     feature = validation.checkString(feature)
     if(feature.toLowerCase() === "runtime"){
         shows.sort((a, b) => a.averageRuntime - b.averageRuntime)
