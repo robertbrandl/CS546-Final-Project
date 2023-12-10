@@ -2,6 +2,7 @@ import {Router} from 'express';
 const router = Router();
 import {showData} from '../data/index.js';
 import * as validation from '../validation.js';
+var shows = [];
 router.route('/searchresults').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows
     let body = req.query.searchTerm;
@@ -18,6 +19,7 @@ router.route('/searchresults').get(async (req, res) => {
       }
     try{
         let s = await showData.searchForShow(term);
+        shows = s;
         if (req.session.user){
             return res.render('allshows', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: s});
         }
@@ -58,7 +60,7 @@ router.route('/filter').get(async (req, res) => {
         }
       }
     try{
-        let s = await showData.filterByGenre(genre);
+        let s = await showData.filterByGenre(genre, shows);
         if (req.session.user){
             return res.render('allshows', {title: "Filterd TV Shows", notLoggedIn: false, firstName: req.session.user.firstName, shows: s});
         }
@@ -89,7 +91,7 @@ router.route('/sort').get(async (req, res) => {
         }
       }
     try{
-        let s = await showData.sortByFeature(feature);
+        let s = await showData.sortByFeature(feature, shows);
         if (req.session.user){
             return res.render('allshows', {title: "Sorted TV Shows", notLoggedIn: false, firstName: req.session.user.firstName, shows: s});
         }
@@ -110,6 +112,7 @@ router.route('/').get(async (req, res) => {
     let s = undefined;
     try{
         s = await showData.getAllShows();
+        shows = []
     }catch(e){
         let codenum = parseInt(e.substring(0,3));
         if (req.session.user){
