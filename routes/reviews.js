@@ -6,7 +6,6 @@ export default router;
 
 //create a new review
 router
-//route /:id for the show id
 .route('/:id')
 .post(async (req, res) => {
     const show_id = req.params.id;
