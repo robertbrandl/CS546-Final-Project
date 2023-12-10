@@ -12,7 +12,7 @@ const create = async (
     watchAgain
 ) => {
     let sId = validation.checkString(showId);
-    if (!ObjectId.isValid(sId)) throw 'invalid object ID';
+    if (!ObjectId.isValid(sId)) throw 'invalid show ID';
     let uId = validation.checkString(userId);
     if (!ObjectId.isValid(uId)) throw 'invalid user ID';
     let fname = validation.checkString(authorFirstName);
