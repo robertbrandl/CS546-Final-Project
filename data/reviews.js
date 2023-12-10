@@ -58,7 +58,7 @@ const update = async (
     content,
     watchAgain
 ) => {
-    let rId = validation.checkStrinf(reviewId);
+    let rId = validation.checkString(reviewId);
     if (!ObjectId.isValid(rId)) throw 'invalid review ID';
     let sId = validation.checkString(showId);
     if (!ObjectId.isValid(sId)) throw 'invalid object ID';
