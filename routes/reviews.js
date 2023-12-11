@@ -6,9 +6,9 @@ export default router;
 
 //create a new review
 router
-.route('/:id')
+.route('/')
 .post(async (req, res) => {
-    const show_id = req.params.id;
+    //req.params.id is review id
     const userInfo = req.session.user;
     const reviewInput = req.body;
     if (!reviewInput || Object.keys(reviewInput).length === 0) {
@@ -25,7 +25,7 @@ router
 
     try {
         //Data Validation
-        let sId = validation.checkString(show_id);
+        let sId = validation.checkString(reviewInput.show_id);
         if (!ObjectId.isValid(sId)) throw 'invalid show ID';
         let uId = validation.checkString(req.session.user._id);
         if (!ObjectId.isValid(uId)) throw 'invalid user ID';
@@ -50,7 +50,7 @@ router
     try {
         //Insert the review
         const newReview = await reviewData.create(
-            show_id,
+            reviewInput.show_id,
             req.session.user._id,
             req.session.user.firstName,
             req.session.user.lastName,
@@ -70,3 +70,34 @@ router
     }
 });
 
+router
+.route('/:id')
+.delete(async (req,res) => {
+    //remove a review
+    //req.params.id is review id
+    const reviewId = req.params.id.trim();
+    //data validation
+    try {
+        let rId = validation.checkString(reviewId);
+        if (!ObjectId.isValid(rId)) throw 'invalid show ID';
+    }
+    catch(e) {
+        return res
+            .status(400)
+            .json(e);
+    }
+    try {
+        let deletedReview = await reviewData.remove(reviewId);
+        return res
+            .status(200)
+            .json(deletedReview);
+    }
+    catch(e) {
+        return res
+            .status(404)
+            .json({error: e});
+    }
+})
+.put(async (req,res) => {
+
+});
