@@ -80,7 +80,6 @@ router
 
 router
 .route('/account/:id')
-//get to get all reviews? need to add data function
 .delete(async (req,res) => {
     //remove a review
     //req.params.id is review id
