@@ -1,0 +1,23 @@
+<h1>{{title}}h1>
+<h3>Posting as {{firstName}} {{lastName}}</h3>
+
+<div class="form-group hidden" id="error-container">
+        <div class="text-goes-here">
+        </div>
+</div>
+{{#if error}} 
+<div class="error">{{msg}}</div> 
+{{/if}} 
+
+<form id="create-review-form" method="POST" action="/reviews">
+    <label for="titleInput">Title</label> 
+    <input type="text" name="titleInput" id="titleInput" >
+    <label for="ratingInput">Rating</label> 
+    <input type="range" name="ratingInput" id="ratingInput" min="0" max="10">
+    <label for="contentInput">Content</label>
+    <input type="text" name="contentInput" id="contentInput">
+    <label for="watchAgainInput">I'd Watch Again</label>
+    <input type="checkbox" name="watchAgainInput" id="watchAgainInput">
+</form>
+
+<p><a href="/shows/"{{show_id}}>Return to show's page</a></p>

@@ -1,31 +1,39 @@
 import {Router} from 'express';
 const router = Router();
 import {reviewData} from '../data/index.js';
+import {showData} from '../data/shows.js';
 import * as validation from '../validation.js';
 
 
 //create a new review
 router
-.route('/')
-.post(async (req, res) => {
-    //req.params.id is review id
+.route('/:id/createreview')
+.get(async (req, res) => {
     const userInfo = req.session.user;
-    const reviewInput = req.body;
-    if (!reviewInput || Object.keys(reviewInput).length === 0) {
-        return res
-            .status(400)
-            .json({error: 'There are no fields in the request body'});
-    }
     if (!userInfo) {
         //user is not logged in
-        return res
-            .status(401)
-            .json({error: 'User is not logged in'});
+        res.redirect('/login');
     }
+    const showId = req.params.id.trim();
+    const show = await showData.getIndividualShow(showId);
+    showTitle = show.name;
 
+    res.render('createreview', {title: "Create a review for "+showTitle, firstName: req.session.user.firstName, 
+    lastName: req.session.user.lastName, show_id: showId});
+})
+.post(async (req, res) => {
+    const userInfo = req.session.user;
+    if (!userInfo) {
+        //user is not logged in
+        res.redirect('/login');
+    }
+    const showId = req.params.id.trim();
+    const show = await showData.getIndividualShow(showId);
+    showTitle = show.name;
+    const reviewInput = req.body;
     try {
         //Data Validation
-        let sId = validation.checkString(reviewInput.show_id);
+        let sId = validation.checkString(showId);
         if (!ObjectId.isValid(sId)) throw 'invalid show ID';
         let uId = validation.checkString(req.session.user._id);
         if (!ObjectId.isValid(uId)) throw 'invalid user ID';
@@ -43,14 +51,13 @@ router
         if (typeof reviewInput.watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
     }
     catch(e) {
-        return res
-            .status(400)
-            .json({error: e});
+        res.render('createreview', {title: "Create a review for "+showTitle, firstName: req.session.user.firstName, 
+        lastName: req.session.user.lastName, show_id: showId, error: e});
     }
     try {
         //Insert the review
         const newReview = await reviewData.create(
-            reviewInput.show_id,
+            showId,
             req.session.user._id,
             req.session.user.firstName,
             req.session.user.lastName,
@@ -59,19 +66,21 @@ router
             reviewInput.content,
             reviewInput.watchAgain
         );
-        return res
-            .status(200)
-            .json(newReview);
+        if (newReview !== undefined) {
+        //if successful, redirect to individual show page
+            res.redirect('/shows/'+showId);
+        }
     }
     catch(e) {
-        return res
-            .status(500)
-            .json({error: e});
+        //could not create review
+        res.render('createreview', {title: "Create a review for "+showTitle, firstName: req.session.user.firstName, 
+        lastName: req.session.user.lastName, show_id: showId, error: e});
     }
 });
 
 router
 .route('/:id')
+//.get to get the review itself?
 .delete(async (req,res) => {
     //remove a review
     //req.params.id is review id
@@ -79,9 +88,7 @@ router
     const userInfo = req.session.user;
     if (!userInfo) {
         //user is not logged in
-        return res
-            .status(401)
-            .json({error: 'User is not logged in'});
+        res.redirect('/login');
     }
     //data validation
     try {
@@ -89,17 +96,20 @@ router
         if (!ObjectId.isValid(rId)) throw 'invalid review ID';
     }
     catch(e) {
+        //this will redirect back to the review's page
         return res
             .status(400)
             .json(e);
     }
     try {
         let deletedReview = await reviewData.remove(reviewId);
+        //this will render "delete successful" on the review's page
         return res
             .status(200)
             .json(deletedReview);
     }
     catch(e) {
+        //this will render "delete unsuccessful" on the review's page
         return res
             .status(404)
             .json({error: e});

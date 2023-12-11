@@ -49,10 +49,6 @@ const create = async (
 
 const update = async (
     reviewId,
-    showId,
-    userId,
-    authorFirstName,
-    authorLastName,
     title,
     rating,
     content,
@@ -60,12 +56,6 @@ const update = async (
 ) => {
     let rId = validation.checkString(reviewId);
     if (!ObjectId.isValid(rId)) throw 'invalid review ID';
-    let sId = validation.checkString(showId);
-    if (!ObjectId.isValid(sId)) throw 'invalid object ID';
-    let uId = validation.checkString(userId);
-    if (!ObjectId.isValid(uId)) throw 'invalid user ID';
-    let fname = validation.checkString(authorFirstName);
-    let lname = validation.checkString(authorLastName);
     let til = validation.checkString(title);
     if (rating === undefined || rating === null || !rating){
         throw "The rating is not supplied, null, or undefined";
@@ -78,10 +68,6 @@ const update = async (
 	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
     const updatedReview = {
         _id: rId,
-        showId: sId,
-        userId: uId,
-        authorFirstName: fname,
-        authorLastName: lname,
         title: til,
         rating: rating,
         content: cont,
