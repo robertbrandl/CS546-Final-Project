@@ -41,9 +41,17 @@ router.route('/findmenu').get(async (req, res) => {//Don't Know What to Watch? M
 });
 router.route('/findmenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
     //code here for POST 
-    //same like the data function, do all error checking
-    //when finished, run the data function, make sure no errors
-    //render the output page called menuresults
+    const { genre, runtime, actors } = req.body;
+    if (!genre || !runtime || !actors || !Array.isArray(actors)) {
+        return res.status(400).send('Invalid parameters');
+      }
+    
+      try {
+        const matchingShows = await findMenu(genre, runtime, actors);
+    return res.render('menuresults', { title: "Menu Results", shows: matchingShows });
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
 });
 router.route('/filter').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows with the inputted genre

@@ -65,17 +65,35 @@ const searchForShow = async(
 
 //use axios with 
 }
-const findMenu = async(
-    //params
-) =>{ //Don't Know What to Watch? Menu Function
-    //1) add input parameters
-    //2) error check the parameters
-    //3) run getAllShows to get show array
-    //4) find matching shows (up to 5) by iterating over the result from 3
-    //for genre and runtime, just check those keys
-    // --> to access the actors for the dropdown, use axios and https://api.tvmaze.com/shows/:apiId/cast for each show
-    //then save the cast in a variable, like let cast = result.data and iterate through each element in cast, like x.person.name and see if it matches the top actors entered in the menu
-    //5) return array with up to 5 show objects like in getAllShows
+const axios = require('axios');
+const findMenu = async(genre,runtime,actors) =>{ //updated dkwtw menu
+    if (!genre || !runtime || !actors || !Array.isArray(actors)) {
+        throw new Error('Invalid parameters');
+      }
+    
+      const allShows = await getAllShows();
+      let matchingShows = [];
+    
+      for (let show of allShows) {
+        if (show.genre.includes(genre) && show.runtime <= runtime) {
+          const response = await axios.get(`https://api.tvmaze.com/shows/${show.id}/cast`);
+          const cast = response.data;
+    
+          for (let actor of cast) {
+            if (actors.includes(actor.person.name)) {
+              matchingShows.push(show);
+              break;
+            }
+          }
+        }
+    
+        if (matchingShows.length >= 5) {
+          break;
+        }
+      }
+    
+      return matchingShows.slice(0, 5);
+
 }
 const filterByGenre = async (filteredGenre, s) => {
     filteredGenre = validation.checkString(filteredGenre)
