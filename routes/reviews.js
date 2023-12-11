@@ -76,10 +76,17 @@ router
     //remove a review
     //req.params.id is review id
     const reviewId = req.params.id.trim();
+    const userInfo = req.session.user;
+    if (!userInfo) {
+        //user is not logged in
+        return res
+            .status(401)
+            .json({error: 'User is not logged in'});
+    }
     //data validation
     try {
         let rId = validation.checkString(reviewId);
-        if (!ObjectId.isValid(rId)) throw 'invalid show ID';
+        if (!ObjectId.isValid(rId)) throw 'invalid review ID';
     }
     catch(e) {
         return res
@@ -99,5 +106,31 @@ router
     }
 })
 .put(async (req,res) => {
+    //update a review
+    const reveiwId = req.params.id.trim();
+    const updatedData = req.body;
+    if (!updatedData || Object.keys(updatedData).length === 0) {
+        return res
+          .status(400)
+          .json({error: 'There are no fields in the request body'});
+    }
+    const userInfo = req.session.user;
+    if (!userInfo) {
+        //user is not logged in
+        return res
+            .status(401)
+            .json({error: 'User is not logged in'});
+    }
+    //data validation
+    try {
+        let rId = validation.checkString(reviewId);
+        if (!ObjectId.isValid(rId)) throw 'invalid review id';
+    }
+    catch(e) {
+        return res  
+            .status(400)
+            .json(e);
+    }
+
 
 });
