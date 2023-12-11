@@ -1,3 +1,19 @@
 //page title
 //form for the Menu with submit button
 //link back to home screen if they don't want to continue
+<h1>{{title}}</h1>
+
+<form action="/findmenu" method="post">
+  <label for="genre">Genre:</label>
+  <input type="text" id="genre" name="genre" required>
+
+  <label for="runtime">Runtime:</label>
+  <input type="number" id="runtime" name="runtime" required>
+
+  <label for="actors">Actors:</label>
+  <input type="text" id="actors" name="actors" required>
+
+  <input type="submit" value="Submit">
+</form>
+
+<a href="/">Back to home</a>
