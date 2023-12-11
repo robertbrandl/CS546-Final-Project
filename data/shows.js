@@ -79,6 +79,9 @@ const findMenu = async(
 }
 const filterByGenre = async (filteredGenre, s) => {
     filteredGenre = validation.checkString(filteredGenre)
+    let allgenres = ['Comedy', 'History', 'Sports', 'Horror', 'Adventure', 'Crime', 'Supernatural', 'Action', 'Anime', 'Science-Fiction', 'Drama', 'Legal', 'Thriller', 'Fantasy', 'Family', 'War', 'Medical', 'Espionage', 'Romance', 'Music', 'Western', 'Mystery'];
+    allgenres = allgenres.map(element => element.toLowerCase());
+    if (!allgenres.includes(filteredGenre.toLowerCase())){ throw "Genre name is not valid";}
     let shows = s;
     if (s.length == 0) shows = await getAllShows()
     let filtered = shows.filter(show => {

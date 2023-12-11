@@ -15,6 +15,14 @@
         {{else}}
             <h4>Would you watch again? NO!</h4>
         {{/if}}
+        <form id="editReviewSubmitForm" action="/review/{{_id}}" method="GET">
+            <label for="editReviewSubmitButton">Edit this review:</label> 
+            <button type="submit" id="editReviewSubmitButton">Edit Review</button>
+        </form>
+        <form id="deleteReviewForm" action="/review/{{_id}}" method="DELETE">
+            <label for="deleteReviewButton">Delete this review:</label> 
+            <button type="submit" id="deleteReviewButton">Delete Review</button>
+        </form>
     {{/each}}
 {{else}}
     <h3>None Posted Yet!</h3>
@@ -32,4 +40,3 @@
     <h3>No shows added yet!</h3>
 {{/if}}
 //show all reviews, with button to edit and delete each one
-//change password button

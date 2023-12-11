@@ -59,6 +59,16 @@ router.route('/filter').get(async (req, res) => {
             return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Genre Search Term cannot be empty and must be a valid string"});
         }
       }
+    let allgenres = ['Comedy', 'History', 'Sports', 'Horror', 'Adventure', 'Crime', 'Supernatural', 'Action', 'Anime', 'Science-Fiction', 'Drama', 'Legal', 'Thriller', 'Fantasy', 'Family', 'War', 'Medical', 'Espionage', 'Romance', 'Music', 'Western', 'Mystery'];
+    allgenres = allgenres.map(element => element.toLowerCase());
+    if (!allgenres.includes(genre.toLowerCase())){
+        if (req.session.user){
+            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Genre name is not valid"});
+        }
+        else{
+            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Genre name is not valid"});
+        }
+    }
     try{
         let s = await showData.filterByGenre(genre, shows);
         if (req.session.user){
