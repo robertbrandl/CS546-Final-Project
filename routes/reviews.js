@@ -2,7 +2,7 @@ import {Router} from 'express';
 const router = Router();
 import {reviewData} from '../data/index.js';
 import * as validation from '../validation.js';
-export default router;
+
 
 //create a new review
 router
@@ -107,9 +107,9 @@ router
 })
 .put(async (req,res) => {
     //update a review
-    const reveiwId = req.params.id.trim();
-    const updatedData = req.body;
-    if (!updatedData || Object.keys(updatedData).length === 0) {
+    const reviewId = req.params.id.trim();
+    const reviewInput = req.body;
+    if (!reviewInput || Object.keys(reviewInput).length === 0) {
         return res
           .status(400)
           .json({error: 'There are no fields in the request body'});
@@ -125,12 +125,50 @@ router
     try {
         let rId = validation.checkString(reviewId);
         if (!ObjectId.isValid(rId)) throw 'invalid review id';
+        let sId = validation.checkString(reviewInput.show_id);
+        if (!ObjectId.isValid(sId)) throw 'invalid show ID';
+        let uId = validation.checkString(req.session.user._id);
+        if (!ObjectId.isValid(uId)) throw 'invalid user ID';
+        let fname = validation.checkString(req.session.user.firstName);
+        let lname = validation.checkString(req.session.user.lastName);
+        let til = validation.checkString(reviewInput.title);
+        if (reviewInput.rating === undefined || reviewInput.rating === null || !reviewInput.rating){
+            throw "The rating is not supplied, null, or undefined";
+        }
+        if (typeof reviewInput.rating !== 'number') {throw `${reviewInput.rating} is not a number`;}
+        if (isNaN(reviewInput.rating)) {throw `${reviewInput.rating} is NaN`;}
+        if (reviewInput.rating < 1 || reviewInput.rating === Infinity || reviewInput.rating > 10 || (parseFloat(reviewInput.rating) !== parseInt(reviewInput.rating))){throw 'MaxCap is not valid'}
+        let cont = validation.checkString(reviewInput.content);
+        if (reviewInput.watchAgain === undefined || reviewInput.watchAgain === null){throw "watchAgain is null or undefined"}
+        if (typeof reviewInput.watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
     }
     catch(e) {
-        return res  
+        return res
             .status(400)
-            .json(e);
+            .json({error: e});
     }
-
-
+    try {
+        //try to update
+        const updated = await reviewData.update(
+                reviewId,
+                reviewInput.show_id,
+                req.session.user._id,
+                req.session.user.firstName,
+                req.session.user.lastName,
+                reviewInput.title,
+                reviewInput.rating,
+                reviewInput.content,
+                reviewInput.watchAgain
+            );
+            return res
+                .status(200)
+                .json(updated);
+    }
+    catch(e) {
+        return res
+            .status(404)
+            .json({error:e});
+    }
 });
+
+export default router;
