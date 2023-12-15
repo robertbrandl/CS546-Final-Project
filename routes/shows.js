@@ -130,7 +130,7 @@ router.route('/').get(async (req, res) => {
     let s = undefined;
     try{
         s = await showData.getAllShows();
-        shows = []
+        shows = s
     }catch(e){
         let codenum = parseInt(e.substring(0,3));
         if (req.session.user){
