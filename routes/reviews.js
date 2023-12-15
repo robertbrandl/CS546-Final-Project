@@ -13,7 +13,7 @@ router
     const userInfo = req.session.user;
     if (!userInfo) {
         //user is not logged in
-        res.redirect('/login');
+        return res.redirect('/user/login');
     }
     let showId = req.params.id
     try{ //id validation
@@ -32,16 +32,15 @@ router
     }catch(e){
             return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "Show cannot be found"});
     }
-        let showTitle = show.name;
-
-    res.render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
-    lastName: req.session.user.lastName, show_id: showId});
+    let showTitle = show.name;
+    return res.render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
+    lastName: req.session.user.lastName, show_id: parseInt(showId)});
 })
 .post(async (req, res) => {
     const userInfo = req.session.user;
     if (!userInfo) {
         //user is not logged in
-        res.redirect('/login');
+        return res.redirect('/login');
     }
     let showId = req.params.id
     try{ //id validation
@@ -62,7 +61,8 @@ router
     showTitle = show.name;
     const reviewInput = req.body;
     //check if user has posted a review for this show already
-    const userReviews = await userData.getReviewsForUser(req.session.user);
+    let user = await userData.getUser(req.session.user.emailAddress);
+    const userReviews = await userData.getReviewsForUser(user);
     for (let i=0; i<userReviews.length; i++) {
         if (userReviews[i].showId === showId) {
             //user has already posted a review for this show
@@ -104,12 +104,12 @@ router
         );
         if (newReview !== undefined) {
         //if successful, redirect to individual show page
-            res.redirect('/shows/'+showId);
+            return res.redirect('/shows/'+showId);
         }
     }
     catch(e) {
         //could not create review
-        res.render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
+        return res.render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
         lastName: req.session.user.lastName, show_id: showId, error: e});
     }
 });
@@ -123,7 +123,7 @@ router
     const userInfo = req.session.user;
     if (!userInfo) {
         //user is not logged in
-        res.redirect('/login');
+        return res.redirect('/login');
     }
     //data validation
     try {
@@ -140,7 +140,7 @@ router
         }
     }
     catch(e) {
-        res.status(400).redirect('error', {title:"Error", notLoggedIn: false, code:404,errorText:'review could not be deleted'});
+        res.status(500).redirect('error', {title:"Error", notLoggedIn: false, code:500,errorText:'review could not be deleted'});
     }
 });
 //edit existing review
@@ -153,7 +153,7 @@ router
     const userInfo = req.session.user;
     if (!userInfo) {
         //user is not logged in
-        res.redirect('/login');
+        return res.redirect('/login');
     }
     //data validation
     try {
@@ -171,7 +171,7 @@ router
         if (typeof reviewInput.watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
     }
     catch(e) {
-        res.render('error',{code:'400',errorText:e});
+        res.status(400).redirect('error', {title:"Error", notLoggedIn: false, code:400,errorText:e});
     }
     try {
         //try to update
@@ -183,11 +183,11 @@ router
                 reviewInput.watchAgain
             );
         if (updated !== undefined) {
-            return res.redirect('/account');
+            return res.redirect('/user/account');
         }  
     }
     catch(e) {
-        res.redirect('error', {code:'404',errorText:'review could not be deleted'});
+        res.status(500).redirect('error', {title:"Error", notLoggedIn: false, code:500,errorText:'review could not be updated'});
     }
 });
 

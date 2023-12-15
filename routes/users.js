@@ -123,6 +123,8 @@ router
     }
     if (result !== null){
       req.session.user= {firstName: result.firstName, lastName: result.lastName, emailAddress: result.emailAddress};
+      let user = await userData.getUser(req.session.user.emailAddress);
+      req.session.user._id = user._id;
       return res.redirect("/");
     }
     else{
