@@ -1,8 +1,8 @@
 import {Router} from 'express';
 const router = Router();
 import {reviewData} from '../data/index.js';
-import {showData} from '../data/shows.js';
-import {usersData} from '../data/users.js';
+import {showData} from '../data/index.js';
+import {userData} from '../data/index.js';
 import * as validation from '../validation.js';
 
 
@@ -33,7 +33,7 @@ router
     showTitle = show.name;
     const reviewInput = req.body;
     //check if user has posted a review for this show already
-    const userReviews = await usersData.getReviewsForUser(req.session.user);
+    const userReviews = await userData.getReviewsForUser(req.session.user);
     for (let i=0; i<userReviews.length; i++) {
         if (userReviews[i].showId === showId) {
             //user has already posted a review for this show

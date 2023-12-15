@@ -65,7 +65,7 @@ const searchForShow = async(
 
 //use axios with 
 }
-const axios = require('axios');
+
 const findMenu = async(genre,runtime,actors) =>{ //updated dkwtw menu
     if (!genre || !runtime || !actors || !Array.isArray(actors)) {
         throw new Error('Invalid parameters');
