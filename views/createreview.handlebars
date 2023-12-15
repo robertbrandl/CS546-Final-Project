@@ -13,7 +13,8 @@
     <label for="titleInput">Title</label> 
     <input type="text" name="titleInput" id="titleInput" >
     <label for="ratingInput">Rating</label> 
-    <input type="range" name="ratingInput" id="ratingInput" min="0" max="10">
+    <input type="range" name="ratingInput" id="ratingInput" min="0" max="10" oninput="this.nextElementSibling.value = this.value">
+    <output>5</output>
     <label for="contentInput">Content</label>
     <input type="text" name="contentInput" id="contentInput">
     <label for="watchAgainInput">I'd Watch Again</label>
@@ -22,4 +23,4 @@
     <button type="submit" id="submitReviewButton">Submit Review</button>
 </form>
 
-<p><a href="/shows/"{{show_id}}>Return to show's page</a></p>
+<p><a href="/shows/{{show_id}}">Return to show's page</a></p>
