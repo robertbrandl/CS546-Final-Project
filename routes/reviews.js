@@ -2,6 +2,7 @@ import {Router} from 'express';
 const router = Router();
 import {reviewData} from '../data/index.js';
 import {showData} from '../data/shows.js';
+import {usersData} from '../data/users.js';
 import * as validation from '../validation.js';
 
 
@@ -31,6 +32,15 @@ router
     const show = await showData.getIndividualShow(showId);
     showTitle = show.name;
     const reviewInput = req.body;
+    //check if user has posted a review for this show already
+    const userReviews = await usersData.getReviewsForUser(req.session.user);
+    for (let i=0; i<userReviews.length; i++) {
+        if (userReviews[i].showId === showId) {
+            //user has already posted a review for this show
+            res.render('createreview', {title: "Create a review for "+showTitle, firstName: req.session.user.firstName, 
+            lastName: req.session.user.lastName, show_id: showId, error: "User has already posted a review for this show"});
+        }
+    }
     try {
         //Data Validation
         let sId = validation.checkString(showId);
@@ -77,9 +87,9 @@ router
         lastName: req.session.user.lastName, show_id: showId, error: e});
     }
 });
-
+//delete existing review
 router
-.route('/account/:id')
+.route('/delete/:id')
 .delete(async (req,res) => {
     //remove a review
     //req.params.id is review id
@@ -106,7 +116,10 @@ router
     catch(e) {
         res.redirect('error', {code:'404',errorText:'review could not be deleted'});
     }
-})
+});
+//edit existing review
+router
+.route('/edit/:id')
 .put(async (req,res) => {
     //update a review
     const reviewId = req.params.id.trim();
