@@ -101,7 +101,7 @@ const filterByGenre = async (filteredGenre, s) => {
     allgenres = allgenres.map(element => element.toLowerCase());
     if (!allgenres.includes(filteredGenre.toLowerCase())){ throw "Genre name is not valid";}
     let shows = s;
-    if (s.length == 0) shows = await getAllShows()
+    if (s.length == 0) throw "Cannot sort no shows!"
     let filtered = shows.filter(show => {
         return show.genres.some(genre => genre.toLowerCase() === filteredGenre.toLowerCase())
     })
@@ -110,7 +110,7 @@ const filterByGenre = async (filteredGenre, s) => {
 }
 const sortByFeature = async(feature, s) => {
     let shows = s;
-    if (s.length == 0) shows = await getAllShows()
+    if (s.length == 0) throw "Cannot sort no shows!"
     feature = validation.checkString(feature)
     if(feature.toLowerCase() === "runtime"){
         shows.sort((a, b) => a.averageRuntime - b.averageRuntime)
@@ -148,7 +148,7 @@ const getIndividualShow = async (
         }catch(e){
             throw e;
         }
-        if (!cast || cast.data.length <= 0){throw "404No show found with that apiId"}
+        if (!cast || cast.data.length < 0){throw "404No show found with that apiId"}
         let actorArr = [];
         for (let x of cast.data){
             actorArr.push(x.person.name);
@@ -162,7 +162,7 @@ const getIndividualShow = async (
         }catch(e){
             throw e;
         }
-        if (!crew || crew.data.length <= 0){throw "404No show found with that apiId"}
+        if (!crew || crew.data.length < 0){throw "404No show found with that apiId"}
         let directors = [];
         let producers = [];
         for (let x of crew.data){
