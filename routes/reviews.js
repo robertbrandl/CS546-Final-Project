@@ -15,11 +15,26 @@ router
         //user is not logged in
         res.redirect('/login');
     }
-    const showId = req.params.id.trim();
-    const show = await showData.getIndividualShow(showId);
-    showTitle = show.name;
+    let showId = req.params.id
+    try{ //id validation
+        showId = validation.checkString(showId)
+        let numId = parseInt(showId)
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {
+            throw `Show apiId is not valid or not a number`
+        }
+        
+    }catch(e){
+        return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})
+    }
+    let show = undefined
+    try{ //try finding show
+            show = await showData.getIndividualShow(showId);
+    }catch(e){
+            return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "Show cannot be found"});
+    }
+        let showTitle = show.name;
 
-    res.render('createreview', {title: "Create a review for "+showTitle, firstName: req.session.user.firstName, 
+    res.render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
     lastName: req.session.user.lastName, show_id: showId});
 })
 .post(async (req, res) => {
@@ -28,8 +43,22 @@ router
         //user is not logged in
         res.redirect('/login');
     }
-    const showId = req.params.id.trim();
-    const show = await showData.getIndividualShow(showId);
+    let showId = req.params.id
+    try{ //id validation
+        showId = validation.checkString(showId)
+        let numId = parseInt(showId)
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {
+            throw `Show apiId is not valid or not a number`
+          }
+    }catch(e){
+        return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})
+    }
+    let show = undefined
+    try{ //try finding show
+        show = await showData.getIndividualShow(showId);
+    }catch(e){
+            return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "Show cannot be found"});
+    }
     showTitle = show.name;
     const reviewInput = req.body;
     //check if user has posted a review for this show already
@@ -37,14 +66,11 @@ router
     for (let i=0; i<userReviews.length; i++) {
         if (userReviews[i].showId === showId) {
             //user has already posted a review for this show
-            res.render('createreview', {title: "Create a review for "+showTitle, firstName: req.session.user.firstName, 
-            lastName: req.session.user.lastName, show_id: showId, error: "User has already posted a review for this show"});
+            res.status(409).render('error', {title: "Error", notLoggedIn:false, firstName: req.session.user.firstName, code: 409, errorText: "User has already posted a review for this show"});
         }
     }
     try {
         //Data Validation
-        let sId = validation.checkString(showId);
-        if (!ObjectId.isValid(sId)) throw 'invalid show ID';
         let uId = validation.checkString(req.session.user._id);
         if (!ObjectId.isValid(uId)) throw 'invalid user ID';
         let fname = validation.checkString(req.session.user.firstName);
@@ -55,13 +81,13 @@ router
         }
         if (typeof reviewInput.rating !== 'number') {throw `${reviewInput.rating} is not a number`;}
         if (isNaN(reviewInput.rating)) {throw `${reviewInput.rating} is NaN`;}
-        if (reviewInput.rating < 1 || reviewInput.rating === Infinity || reviewInput.rating > 10 || (parseFloat(reviewInput.rating) !== parseInt(reviewInput.rating))){throw 'MaxCap is not valid'}
+        if (reviewInput.rating < 1 || reviewInput.rating === Infinity || reviewInput.rating > 10 || (parseFloat(reviewInput.rating) !== parseInt(reviewInput.rating))){throw `${reviewInput.rating} must be integer from 1-10`}
         let cont = validation.checkString(reviewInput.content);
         if (reviewInput.watchAgain === undefined || reviewInput.watchAgain === null){throw "watchAgain is null or undefined"}
         if (typeof reviewInput.watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
     }
     catch(e) {
-        res.render('createreview', {title: "Create a review for "+showTitle, firstName: req.session.user.firstName, 
+        res.status(400).render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
         lastName: req.session.user.lastName, show_id: showId, error: e});
     }
     try {
@@ -83,7 +109,7 @@ router
     }
     catch(e) {
         //could not create review
-        res.render('createreview', {title: "Create a review for "+showTitle, firstName: req.session.user.firstName, 
+        res.render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
         lastName: req.session.user.lastName, show_id: showId, error: e});
     }
 });
@@ -105,16 +131,16 @@ router
         if (!ObjectId.isValid(rId)) throw 'invalid review ID';
     }
     catch(e) {
-        res.redirect('error', {code:'400',errorText:'invalid review ID'});
+        res.status(400).render('error', {title:"Error", notLoggedIn: false, code:400,errorText:'invalid review ID'});
     }
     try {
         let deletedReview = await reviewData.remove(reviewId);
         if (deletedReview !== undefined) {
-            return res.redirect('/account');
+            return res.redirect('/user/account');
         }
     }
     catch(e) {
-        res.redirect('error', {code:'404',errorText:'review could not be deleted'});
+        res.status(400).redirect('error', {title:"Error", notLoggedIn: false, code:404,errorText:'review could not be deleted'});
     }
 });
 //edit existing review
@@ -139,7 +165,7 @@ router
         }
         if (typeof reviewInput.rating !== 'number') {throw `${reviewInput.rating} is not a number`;}
         if (isNaN(reviewInput.rating)) {throw `${reviewInput.rating} is NaN`;}
-        if (reviewInput.rating < 1 || reviewInput.rating === Infinity || reviewInput.rating > 10 || (parseFloat(reviewInput.rating) !== parseInt(reviewInput.rating))){throw 'MaxCap is not valid'}
+        if (reviewInput.rating < 1 || reviewInput.rating === Infinity || reviewInput.rating > 10 || (parseFloat(reviewInput.rating) !== parseInt(reviewInput.rating))){throw `${reviewInput.rating} must be integer from 1-10`}
         let cont = validation.checkString(reviewInput.content);
         if (reviewInput.watchAgain === undefined || reviewInput.watchAgain === null){throw "watchAgain is null or undefined"}
         if (typeof reviewInput.watchAgain !== "boolean"){throw "watchAgain is not a boolean"}

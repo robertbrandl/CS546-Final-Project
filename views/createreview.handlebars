@@ -1,4 +1,4 @@
-<h1>{{title}}h1>
+<h1>{{title}}<h1>
 <h3>Posting as {{firstName}} {{lastName}}</h3>
 
 <div class="form-group hidden" id="error-container">
@@ -18,6 +18,8 @@
     <input type="text" name="contentInput" id="contentInput">
     <label for="watchAgainInput">I'd Watch Again</label>
     <input type="checkbox" name="watchAgainInput" id="watchAgainInput">
+    <label for="submitReviewButton">Save this show:</label> 
+    <button type="submit" id="submitReviewButton">Submit Review</button>
 </form>
 
 <p><a href="/shows/"{{show_id}}>Return to show's page</a></p>

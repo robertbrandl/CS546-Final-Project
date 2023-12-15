@@ -175,7 +175,9 @@ router
     try{
         id = validation.checkString(id);
         let numId = parseInt(id);
-        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {}
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {
+          throw `Show apiId is not valid or not a number`
+        }
     }catch(e){
         if (req.session.user){
             return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})
@@ -218,7 +220,9 @@ router
     try{
         id = validation.checkString(id);
         let numId = parseInt(id);
-        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {}
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {
+          throw `Show apiId is not valid or not a number`
+        }
     }catch(e){
         if (req.session.user){
             return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})

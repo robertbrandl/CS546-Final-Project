@@ -15,11 +15,11 @@
         {{else}}
             <h4>Would you watch again? NO!</h4>
         {{/if}}
-        <form id="editReviewSubmitForm" action="/review/{{_id}}" method="GET">
+        <form id="editReviewSubmitForm" action="/reviews/edit/{{_id}}" method="PUT">
             <label for="editReviewSubmitButton">Edit this review:</label> 
             <button type="submit" id="editReviewSubmitButton">Edit Review</button>
         </form>
-        <form id="deleteReviewForm" action="/review/{{_id}}" method="DELETE">
+        <form id="deleteReviewForm" action="/reviews/delete/{{_id}}" method="DELETE">
             <label for="deleteReviewButton">Delete this review:</label> 
             <button type="submit" id="deleteReviewButton">Delete Review</button>
         </form>
