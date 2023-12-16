@@ -35,23 +35,35 @@ router.route('/searchresults').get(async (req, res) => {
         }
     }
 });
-router.route('/findmenu').get(async (req, res) => {//Don't Know What to Watch? Menu Route
+router.route('/findMenu').get(async (req, res) => {//Don't Know What to Watch? Menu Route
     //code here for GET will render the Don't Know What to Watch? Menu
     return res.render('findmenu', {title: "Don't Know What to Watch?"});
-});
-router.route('/findmenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
-    //code here for POST 
-    const { genre, runtime, actors } = req.body;
-    if (!genre || !runtime || !actors || !Array.isArray(actors)) {
-        return res.status(400).send('Invalid parameters');
-      }
     
-      try {
-        const matchingShows = await findMenu(genre, runtime, actors);
-    return res.render('menuresults', { title: "Menu Results", shows: matchingShows });
-  } catch (error) {
-    return res.status(500).send(error.message);
-  }
+
+});
+router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
+    //code here for POST 
+    try { 
+        console.log(req.body)
+        const { genre, maxRuntime, minAverageRating } = req.body;
+        
+        console.log(genre, maxRuntime, minAverageRating )
+        let matchingShows = undefined
+        try{
+            matchingShows = await showData.findMenu(genre, maxRuntime, minAverageRating);
+        }catch(e){
+            console.log(e)
+        }
+        if (req.session.user){
+            return res.render('menuresults', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: matchingShows});
+        }
+        else{
+            console.log("hi")
+            return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows});
+        }
+      } catch (error) {
+        res.status(400).send({ error: error.message });
+      }
 });
 router.route('/filter').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows with the inputted genre

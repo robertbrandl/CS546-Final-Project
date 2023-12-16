@@ -66,35 +66,27 @@ const searchForShow = async(
 //use axios with 
 }
 
-const findMenu = async(genre,runtime,actors) =>{ //updated dkwtw menu
-    if (!genre || !runtime || !actors || !Array.isArray(actors)) {
-        throw new Error('Invalid parameters');
+const findMenu = async(genre, maxRuntime, minAverageRating) => {
+    console.log(genre, maxRuntime, minAverageRating)
+    genre = validation.checkString(genre);
+    if (!genre || !maxRuntime || !minAverageRating) {
+      throw('Invalid parameters');
+    }
+    console.log(genre);
+    const allShows = await getAllShows();
+    let matchingShows = [];
+    for (let show of allShows) {
+      if (show.genres.includes(genre) && show.averageRuntime <= maxRuntime && show.rating >= minAverageRating) {
+        matchingShows.push(show);
+        console.log(show);
       }
-    
-      const allShows = await getAllShows();
-      let matchingShows = [];
-    
-      for (let show of allShows) {
-        if (show.genre.includes(genre) && show.runtime <= runtime) {
-          const response = await axios.get(`https://api.tvmaze.com/shows/${show.id}/cast`);
-          const cast = response.data;
-    
-          for (let actor of cast) {
-            if (actors.includes(actor.person.name)) {
-              matchingShows.push(show);
-              break;
-            }
-          }
-        }
-    
-        if (matchingShows.length >= 5) {
-          break;
-        }
+      if (matchingShows.length >= 5) {
+        break;
       }
-    
-      return matchingShows.slice(0, 5);
-
-}
+    }
+    console.log(matchingShows);
+    return matchingShows.slice(0, 5);
+  };
 const filterByGenre = async (filteredGenre, s) => {
     filteredGenre = validation.checkString(filteredGenre)
     let allgenres = ['Comedy', 'History', 'Sports', 'Horror', 'Adventure', 'Crime', 'Supernatural', 'Action', 'Anime', 'Science-Fiction', 'Drama', 'Legal', 'Thriller', 'Fantasy', 'Family', 'War', 'Medical', 'Espionage', 'Romance', 'Music', 'Western', 'Mystery'];
