@@ -127,14 +127,14 @@ router
 //delete existing review
 router
 .route('/delete/:id')
-.delete(async (req,res) => {
+.get(async (req,res) => {
     //remove a review
     //req.params.id is review id
     const reviewId = req.params.id.trim();
     const userInfo = req.session.user;
     if (!userInfo) {
         //user is not logged in
-        return res.redirect('/login');
+        return res.redirect('/user/login');
     }
     //data validation
     try {
@@ -151,7 +151,7 @@ router
         }
     }
     catch(e) {
-        res.status(500).redirect('error', {title:"Error", notLoggedIn: false, code:500,errorText:'review could not be deleted'});
+        return res.status(500).render('error', {title:"Error", notLoggedIn: false, code:500,errorText:e});
     }
 });
 //edit existing review
