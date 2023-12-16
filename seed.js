@@ -6,36 +6,40 @@ const db = await dbConnection();
 await db.dropDatabase();
 
 //Adds shows to the database
-let show1 = await shows.getIndividualShow(31); //Marvel's Agents of S.H.I.E.L.D.
+let show1 = await shows.getIndividualShow("31"); //Marvel's Agents of S.H.I.E.L.D.
 const s1id = show1._id.toString();
-let show2 = await shows.getIndividualShow(24); //Hawaii Five-O
+let show2 = await shows.getIndividualShow("24"); //Hawaii Five-O
 const s2id = show2._id.toString();
-let show3 = await shows.getIndividualShow(40); //Death Note
+let show3 = await shows.getIndividualShow("40"); //Death Note
 const s3id = show3._id.toString();
-let show4 = await shows.getIndividualShow(19); //Supernatural
+let show4 = await shows.getIndividualShow("19"); //Supernatural
 const s4id = show4._id.toString();
-let show5 = await shows.getIndividualShow(323); //White Collar
+let show5 = await shows.getIndividualShow("323"); //White Collar
 const s5id = show5._id.toString();
-let show6 = await shows.getIndividualShow(62068); //The Rookie: Feds
+let show6 = await shows.getIndividualShow("62068"); //The Rookie: Feds
 const s6id = show6._id.toString();
-let show7 = await shows.getIndividualShow(82); //Game of Thrones
+let show7 = await shows.getIndividualShow("82"); //Game of Thrones
 const s7id = show7._id.toString();
-let show8 = await shows.getIndividualShow(169); //Breaking Bad
+let show8 = await shows.getIndividualShow("169"); //Breaking Bad
 const s8id = show8._id.toString();
-let show9 = await shows.getIndividualShow(177); //Pretty Little Liars
+let show9 = await shows.getIndividualShow("177"); //Pretty Little Liars
 const s9id = show9._id.toString();
-let show10 = await shows.getIndividualShow(65); //Bones
+let show10 = await shows.getIndividualShow("65"); //Bones
 const s10id = show10._id.toString();
 
 //Adds sample user information into the database
 let user1 = await users.registerUser("Robert", "Brandl", "robert@gmail.com", "User1234!");
-let u1id = await users.getUser("robert@gmail.com")._id.toString();
+let u1id = await users.getUser("robert@gmail.com")
+u1id = u1id._id.toString();
 let user2 = await users.registerUser("Krystal", "Hong", "krystal@gmail.com", "User3456!");
-let u2id = await users.getUser("krystal@gmail.com")._id.toString();
+let u2id = await users.getUser("krystal@gmail.com")
+u2id = u2id._id.toString();
 let user3 = await users.registerUser("Linette", "Santana Encarnacion", "linette@gmail.com", "User6789!");
-let u3id = await users.getUser("linette@gmail.com")._id.toString();
+let u3id = await users.getUser("linette@gmail.com")
+u3id = u3id._id.toString();
 let user4 = await users.registerUser("Sydney", "Linford", "sydney@gmail.com", "User1298!");
-let u4id = await users.getUser("sydney@gmail.com")._id.toString();
+let u4id = await users.getUser("sydney@gmail.com")
+u4id = u4id._id.toString();
 
 //adds reviews for each show into the database
 let review1 = await reviews.create(s2id, u2id, "Krystal", "Hong", "An average detective show", 3, "This show is ok. This is something my parents would watch", false);
