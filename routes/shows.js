@@ -5,7 +5,7 @@ import * as validation from '../validation.js';
 var shows = [];
 router.route('/searchresults').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows
-    let body = req.query.searchTerm;
+    let body = xss(req.query.searchTerm);
     let term = "";
     try{
         term = validation.checkString(body);
@@ -61,12 +61,17 @@ router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? 
             return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows});
         }
       } catch (error) {
-        res.status(400).send({ error: error.message });
+        if (req.session.user){
+            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: error});
+        }
+        else{
+            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: error});
+        }
       }
 });
 router.route('/filter').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows with the inputted genre
-    let body = req.query.filterGenre;
+    let body = xss(req.query.filterGenre);
     let genre = "";
     try{
         genre = validation.checkString(body);
@@ -107,11 +112,11 @@ router.route('/filter').get(async (req, res) => {
 });
 router.route('/sort').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows with the selected feature
-    let body = req.query.sortFeature;
+    let body = xss(req.query.sortFeature);
     let feature = "";
     try{
         feature = validation.checkString(body);
-      }catch(e){
+    }catch(e){
         if (req.session.user){
             return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Feature cannot be empty and must be a valid string"});
         }
@@ -160,7 +165,7 @@ router.route('/').get(async (req, res) => {
 });
 router.route('/:id').get(async (req, res) => {
     //code here for GET will render the individual TV Show page
-    let id = req.params.id;
+    let id = xss(req.params.id);
     try{
         id = validation.checkString(id);
         let numId = parseInt(id);

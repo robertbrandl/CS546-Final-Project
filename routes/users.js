@@ -23,7 +23,7 @@ router
     }
     let fname = "";
     try{
-      fname = validation.checkString(createUserData.firstNameInput);
+      fname = validation.checkString(xss(createUserData.firstNameInput));
     }catch(e){
       return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: First Name is not valid"});
     }
@@ -31,7 +31,7 @@ router
     if (fname.length < 2 || fname.length > 25) return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: First Name length is invalid"});
     let lname = "";
     try{
-      lname = validation.checkString(createUserData.lastNameInput);
+      lname = validation.checkString(xss(createUserData.lastNameInput));
     }catch(e){
       return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: Last Name is not valid"});
     }
@@ -39,7 +39,7 @@ router
     if (lname.length < 2 || lname.length > 25) return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: Last Name length is invalid"});
     let email = "";
     try{
-      email = validation.checkString(createUserData.emailAddressInput);
+      email = validation.checkString(xss(createUserData.emailAddressInput));
     }catch(e){
       return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: Email is not valid"});
     }
@@ -47,7 +47,7 @@ router
     if (validator.validate(email) === false){return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: Invalid email"})}
     let pword = "";
     try{
-      pword = validation.checkString(createUserData.passwordInput);
+      pword = validation.checkString(xss(createUserData.passwordInput));
     }catch(e){
       return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: Password is not valid"});
     }
@@ -58,7 +58,7 @@ router
     if (/[^a-zA-Z0-9]/.test(pword) === false) return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error: Password must contain a special character"});
     let cpword = "";
     try{
-      cpword = validation.checkString(createUserData.confirmPasswordInput);
+      cpword = validation.checkString(xss(createUserData.confirmPasswordInput));
     }catch(e){
       return res.status(400).render('register', {title: "Register", notLoggedIn: true, error: true, msg: "Error:Confirm password does not match password"});
     }
@@ -98,7 +98,7 @@ router
     }
     let email = "";
     try{
-      email = validation.checkString(createUserData.emailAddressInput);
+      email = validation.checkString(xss(createUserData.emailAddressInput));
     }catch(e){
       return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Email is not valid"});
     }
@@ -106,7 +106,7 @@ router
     if (validator.validate(email) === false){return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Invalid email"})}
     let pword = "";
     try{
-      pword = validation.checkString(createUserData.passwordInput);
+      pword = validation.checkString(xss(createUserData.passwordInput));
     }catch(e){
       return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Password is not valid"});
     }
@@ -173,7 +173,7 @@ router.route('/logout').get(async (req, res) => {
 router
   .route('/saveshow/:id')
   .get(async (req, res) => {
-    let id = req.params.id;
+    let id = xss(req.params.id);
     try{
         id = validation.checkString(id);
         let numId = parseInt(id);
@@ -218,7 +218,7 @@ router
 router
   .route('/removeshow/:id')
   .get(async (req, res) => {
-    let id = req.params.id;
+    let id = xss(req.params.id);
     try{
         id = validation.checkString(id);
         let numId = parseInt(id);
@@ -279,7 +279,7 @@ router
         }
         let oldpword = "";
         try{
-            oldpword = validation.checkString(createUserData.oldPasswordInput);
+            oldpword = validation.checkString(xss(createUserData.oldPasswordInput));
         }catch(e){
             return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password is not valid"});
         }
@@ -290,7 +290,7 @@ router
         if (/[^a-zA-Z0-9]/.test(oldpword) === false) return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password must contain a special character"});
         let newpword = "";
         try{
-            newpword = validation.checkString(createUserData.newPasswordInput);
+            newpword = validation.checkString(xss(createUserData.newPasswordInput));
         }catch(e){
             return res.status(400).render('changepassword', {title: "Change Password", notLoggedIn: false, firstName: req.session.user.firstName, error: true, msg: "Error: Current Password is not valid"});
         }

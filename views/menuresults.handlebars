@@ -1,14 +1,34 @@
 {{#each shows}}
     <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>
-    <p>Plot Synopsis: {{{plot}}}</p>
-    <h3>Average Rating: {{rating}}</h3>
-    <h3>Genres:</h3>
-    <ul>
-        {{#each genres}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
-    <h3>Percent of viewers that would watch again: {{rewatchPercent}}%</h3>
-    <h3>Average Runtime: {{runtime}}</h3>
+    {{#if plot}}
+        <p>Plot Synopsis: {{plot}}</p>
+    {{else}}
+        <p>Plot Synopsis: Not Found</p>
+    {{/if}}
+    {{#if check}}
+        <h3>Average Rating: Not Available</h3>
+    {{else}}
+        <h3>Average Rating: {{averageRating}}</h3>
+    {{/if}}
+    {{#if genres}}
+        <h3>Genres:</h3>
+        <ul>
+            {{#each genres}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <h3>Genres: None Found</h3>
+    {{/if}}
+    {{#if check}}
+        <h3>Percent of viewers that would watch again: Not Available</h3>
+    {{else}}
+        <h3>Percent of viewers that would watch again: {{rewatchPercent}}</h3>
+    {{/if}}
+    {{#if averageRuntime}}
+        <h3>Average Runtime: {{averageRuntime}}</h3>
+    {{else}}
+        <h3>Average Runtime: Not Available</h3>
+    {{/if}}
 {{/each}}
 <a href="/">Back to home page!</a>
