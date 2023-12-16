@@ -1,0 +1,100 @@
+body {
+    background: #3C493F;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15pt;
+}
+  
+main {
+    max-width: 75%;
+    margin: auto;
+}
+
+a:link {
+    color:#A2E3C4;
+}
+
+a:visited {
+    color: #A2E3C4;
+}
+
+a:hover {
+    color:#F0F7F4;
+}
+
+a:active {
+    color: #B3BFB8;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color:#F0F7F4;
+}
+
+h2 {
+    font-size: 1.75rem;
+    font-weight: normal;
+    color:#F0F7F4;
+}
+
+h3 {
+    font-size: 1.75rem;
+    font-weight: normal;
+    color: #F0F7F4;
+}
+
+h4 {
+    font-size: 1.50rem;
+    font-weight: normal;
+    color: #ff9b71;
+}
+
+p {
+    font-size: 1.25rem;
+    font-weight: normal;
+    color: #F0F7F4;
+}
+
+ul,ol {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: #F0F7F4;
+}
+
+label {
+    font-size: 1.25rem;
+    font-weight: normal;
+    color: #F0F7F4;
+}
+
+.error {
+    color: #da2c38;
+}
+
+input {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #F0F7F4;
+    color: #3C493F;
+    border: 2px solid #F0F7F4;
+    transition: width 0.4s ease-in-out;
+}
+
+input:focus {
+    width: 25%;
+}
+
+button {
+    /* referenced https://blog.logrocket.com/how-to-style-forms-with-css-a-beginners-guide/ */
+    /* remove default behavior */
+    appearance:none;
+    -webkit-appearance:none;
+    padding:10px;
+    border: 0;
+    background-color:#A2E3C4;
+    color:#F0F7F4;
+    font-weight: bold;
+    text-align: center;
+    border-radius:5px;
+    width:10%;
+}
