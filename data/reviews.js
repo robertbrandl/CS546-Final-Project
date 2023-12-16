@@ -16,7 +16,7 @@ const create = async (
 ) => {
     let sId = validation.checkString(showId);
     const showCollection = await shows();
-    let show = await showCollection.findOne({apiId: parseInt(showId)});
+    let show = await showCollection.findOne({_id: new ObjectId(showId)});
     if(!show){
         throw `Invalid show ID, does not exist`
     }
