@@ -142,7 +142,7 @@ router
         if (!ObjectId.isValid(rId)) throw 'invalid review ID';
     }
     catch(e) {
-        res.status(400).render('error', {title:"Error", notLoggedIn: false, code:400,errorText:'invalid review ID'});
+        res.status(400).render('error', {title:"Error", notLoggedIn: false, firstName: req.session.user.firstName, code:400,errorText:'invalid review ID'});
     }
     try {
         let deletedReview = await reviewData.remove(reviewId);
@@ -151,7 +151,7 @@ router
         }
     }
     catch(e) {
-        return res.status(500).render('error', {title:"Error", notLoggedIn: false, code:500,errorText:e});
+        return res.status(500).render('error', {title:"Error", notLoggedIn: false, firstName: req.session.user.firstName, code:500,errorText:e});
     }
 });
 //edit existing review
@@ -183,7 +183,7 @@ router
     }catch(e){
         return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: e});
     }
-    return res.render('editreview', {title: "Edit Review", review:review, notLoggedIn: false, error: false});
+    return res.render('editreview', {title: "Edit Review", review:review, notLoggedIn: false, firstName: req.session.user.firstName, error: false});
 
 })
 .post(async (req,res) => {
@@ -219,7 +219,7 @@ router
         }
     }
     catch(e) {
-        res.status(400).render('error', {title:"Error", notLoggedIn: false, code:400,errorText:e});
+        res.status(400).render('error', {title:"Error", notLoggedIn: false, firstName: req.session.user.firstName, code:400,errorText:e});
     }
     try {
         //try to update
@@ -235,7 +235,7 @@ router
         }  
     }
     catch(e) {
-        res.status(500).render('error', {title:"Error", notLoggedIn: false, code:500,errorText:'review could not be updated'});
+        res.status(500).render('error', {title:"Error", notLoggedIn: false, firstName: req.session.user.firstName, code:500,errorText:'review could not be updated'});
     }
 });
 
