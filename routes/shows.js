@@ -51,16 +51,15 @@ router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? 
     try {
         let {genre, maxRuntime, minAverageRating} = req.body;
         genre = validation.checkString(genre);
-        if (!genre,maxRuntime,minAverageRating){
-            return res.status(400).send({error: "Please fill out this field"});
-        }
+        maxRuntime = validation.checkString(maxRuntime);
+        minAverageRating = validation.checkString(minAverageRating);
         maxRuntime = Number(maxRuntime);
         minAverageRating = Number(minAverageRating);
         if (isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0) {
-            return res.status(400).send({ error: 'Please enter a valid number for max runtime' });
+            throw 'Please enter a valid number for max runtime';
         }
         if (isNaN(minAverageRating) || minAverageRating === Infinity || minAverageRating < 0 || minAverageRating > 10) {
-            return res.status(400).send({ error: 'Please enter a valid rating between 0 and 10' });
+            throw 'Please enter a valid rating between 0 and 10' ;
         }
         let matchingShows = await showData.findMenu(genre, maxRuntime, minAverageRating);
         if (req.session.user){
