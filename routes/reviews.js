@@ -4,6 +4,8 @@ import {reviewData} from '../data/index.js';
 import {showData} from '../data/index.js';
 import {userData} from '../data/index.js';
 import {reviews} from '../config/mongoCollections.js';
+import {ObjectId} from 'mongodb';
+import xss from 'xss';
 
 import * as validation from '../validation.js';
 
@@ -60,7 +62,7 @@ router
     }catch(e){
             return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "Show cannot be found"});
     }
-    showTitle = show.name;
+    let showTitle = show.name;
     const reviewInput = req.body;
     //check if user has posted a review for this show already
     let user = await userData.getUser(req.session.user.emailAddress);
@@ -74,19 +76,19 @@ router
     try {
         //Data Validation
         let uId = validation.checkString(req.session.user._id);
-        if (!ObjectId.isValid(uId)) throw 'invalid user ID';
         let fname = validation.checkString(req.session.user.firstName);
         let lname = validation.checkString(req.session.user.lastName);
-        let til = validation.checkString(reviewInput.title);
-        if (reviewInput.rating === undefined || reviewInput.rating === null || !reviewInput.rating){
+        let til = validation.checkString(reviewInput.titleInput);
+        if (reviewInput.ratingInput === undefined || reviewInput.ratingInput === null || !reviewInput.ratingInput){
             throw "The rating is not supplied, null, or undefined";
         }
-        if (typeof reviewInput.rating !== 'number') {throw `${reviewInput.rating} is not a number`;}
-        if (isNaN(reviewInput.rating)) {throw `${reviewInput.rating} is NaN`;}
-        if (reviewInput.rating < 1 || reviewInput.rating === Infinity || reviewInput.rating > 10 || (parseFloat(reviewInput.rating) !== parseInt(reviewInput.rating))){throw `${reviewInput.rating} must be integer from 1-10`}
-        let cont = validation.checkString(reviewInput.content);
-        if (reviewInput.watchAgain === undefined || reviewInput.watchAgain === null){throw "watchAgain is null or undefined"}
-        if (typeof reviewInput.watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
+        if (typeof parseInt(reviewInput.ratingInput) !== 'number') {throw `${reviewInput.ratingInput} is not a number`;}
+        if (isNaN(reviewInput.ratingInput)) {throw `${reviewInput.ratingInput} is NaN`;}
+        if (reviewInput.ratingInput < 1 || reviewInput.ratingInput === Infinity || reviewInput.ratingInput > 10 || (parseFloat(reviewInput.ratingInput) !== parseInt(reviewInput.ratingInput))){throw `${reviewInput.ratingInput} must be integer from 1-10`}
+        let cont = validation.checkString(reviewInput.contentInput);
+        console.log(reviewInput.watchAgainInput);
+        if (reviewInput.watchAgainInput === undefined || reviewInput.watchAgainInput === null){throw "watchAgain is null or undefined"}
+        if (typeof reviewInput.watchAgainInput !== "boolean"){throw "watchAgain is not a boolean"}
     }
     catch(e) {
         res.status(400).render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
@@ -99,10 +101,10 @@ router
             req.session.user._id,
             req.session.user.firstName,
             req.session.user.lastName,
-            reviewInput.title,
-            reviewInput.rating,
-            reviewInput.content,
-            reviewInput.watchAgain
+            reviewInput.titleInput,
+            reviewInput.ratingInput,
+            reviewInput.contentInput,
+            reviewInput.watchAgainInput
         );
         if (newReview !== undefined) {
         //if successful, redirect to individual show page

@@ -2,6 +2,7 @@ import {Router} from 'express';
 const router = Router();
 import {showData} from '../data/index.js';
 import * as validation from '../validation.js';
+import xss from 'xss';
 var shows = [];
 router.route('/searchresults').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows
