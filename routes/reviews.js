@@ -177,7 +177,7 @@ router
     let review = undefined
     try{
         const reviewCollection = await reviews();
-        review = await reviewCollection.findOne({_id: new ObjectId(mid)});
+        review = await reviewCollection.findOne({_id: new ObjectId(reviewId)});
         if (!review){
             throw `No review with that ID`
         }

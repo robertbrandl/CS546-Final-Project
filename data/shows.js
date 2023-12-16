@@ -67,9 +67,8 @@ const searchForShow = async(
 }
 const findMenu = async(genre, maxRuntime, minAverageRating) => {
     genre = validation.checkString(genre);
-    if (!genre || !maxRuntime|| !minAverageRating) {
-      throw('Please fill out this field');
-    }
+    if (maxRuntime === null || maxRuntime === undefined){ throw "maxRuntime is not valid"}
+    if (minAverageRating === null || minAverageRating === undefined){ throw "maxRuntime is not valid"}
     if (typeof maxRuntime !== 'number' || isNaN(maxRuntime) || maxRuntime === Infinity) {
       throw('Please enter a valid number');
     }
