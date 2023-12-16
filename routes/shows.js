@@ -46,20 +46,29 @@ router.route('/findMenu').get(async (req, res) => {//Don't Know What to Watch? M
 });
 router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
     //code here for POST 
+
     try {
-        const { genre, maxRuntime, minAverageRating } = req.body;
-        let matchingShows = undefined
-        try{
-            matchingShows = await showData.findMenu(genre, maxRuntime, minAverageRating);
-        }catch(e){
-            console.log(e)
+        let {genre, maxRuntime, minAverageRating} = req.body;
+        genre = validation.checkString(genre);
+        if (!genre,maxRuntime,minAverageRating){
+            return res.status(400).send({error: "Please fill out this field"});
         }
+        maxRuntime = Number(maxRuntime);
+        minAverageRating = Number(minAverageRating);
+        if (isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0) {
+            return res.status(400).send({ error: 'Please enter a valid number for max runtime' });
+        }
+        if (isNaN(minAverageRating) || minAverageRating === Infinity || minAverageRating < 0 || minAverageRating > 10) {
+            return res.status(400).send({ error: 'Please enter a valid rating between 0 and 10' });
+        }
+        let matchingShows = await showData.findMenu(genre, maxRuntime, minAverageRating);
         if (req.session.user){
             return res.render('menuresults', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: matchingShows});
         }
         else{
             return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows});
         }
+<<<<<<< HEAD
       } catch (error) {
         if (req.session.user){
             return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: error});
@@ -68,6 +77,11 @@ router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? 
             return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: error});
         }
       }
+=======
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
+>>>>>>> 1b652cf (addition of valitation checks and edit handlebars, Draft of ajax form)
 });
 router.route('/filter').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows with the inputted genre

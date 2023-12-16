@@ -67,8 +67,20 @@ const searchForShow = async(
 }
 const findMenu = async(genre, maxRuntime, minAverageRating) => {
     genre = validation.checkString(genre);
-    if (!genre || !maxRuntime || !minAverageRating) {
-      throw('Invalid parameters');
+    if (!genre || !maxRuntime|| !minAverageRating) {
+      throw('Please fill out this field');
+    }
+    if (typeof maxRuntime !== 'number' || isNaN(maxRuntime) || maxRuntime === Infinity) {
+      throw('Please enter a valid number');
+    }
+    if (typeof minAverageRating !== 'number' || isNaN(minAverageRating) || minAverageRating === Infinity) {
+        throw('Please enter a valid number');
+        }
+    if (maxRuntime < 0) {
+        throw('Please a valid number greater than 0');
+    }
+    if (minAverageRating < 0 || minAverageRating > 10) {
+        throw('Please a valid rating between 0 and 10');
     }
     const allShows = await getAllShows();
     let matchingShows = [];

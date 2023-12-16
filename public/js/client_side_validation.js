@@ -95,6 +95,40 @@ if (loginForm) {
         }
     });
 }
+/*if (loginForm) {
+    const email = document.getElementById('emailAddressInput');
+    const password= document.getElementById('passwordInput');
+    const errorContainer = document.getElementById('error-container');
+    const errorTextElement =
+      errorContainer.getElementsByClassName('text-goes-here')[0];
+    const otherErrorTextElement =
+      document.getElementsByClassName('error')[0];
+    loginForm.addEventListener('submit', async (event) =>{
+        try{
+            event.preventDefault();
+            errorContainer.classList.add('hidden');
+            let loginR = checkLoginInput(email.value, password.value);
+            const response = await fetch('/login', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email.value,
+                        password: password.value
+                    })
+                });
+        }catch(e){
+            event.preventDefault();
+            const message = typeof e === 'string' ? e : e.message;
+            errorTextElement.textContent = "Error: " + e;
+            errorContainer.classList.remove('hidden');
+            if (otherErrorTextElement){
+                otherErrorTextElement.style.display = "none";
+            }
+        }
+    });
+}*/
 if (regForm) {
     const firstName = document.getElementById('firstNameInput');
     const lastName = document.getElementById('lastNameInput');
