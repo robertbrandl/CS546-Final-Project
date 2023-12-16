@@ -7,12 +7,13 @@ add button to add review
             <button type="submit" id="saveShowButton">Save Show</button>
         </form>
     {{/if}}
-    {{!-- {{#if ../review}} --}}
+
+    {{#if ../reviewExists}}
         <form id="createReviewForm" action="/reviews/{{apiId}}/createreview" method="GET">
         <label for="createReviewButton">Create a review for this show:</label> 
         <button type="submit" id="createReviewButton">Create Review</button>
         </form>
-    {{!-- {{/if}} --}}
+    {{/if}}
 
     {{#if plot}}
         <p>Plot Synopsis: {{{plot}}}</p>

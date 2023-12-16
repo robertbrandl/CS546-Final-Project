@@ -175,6 +175,15 @@ router.route('/').get(async (req, res) => {
 router.route('/:id').get(async (req, res) => {
     //code here for GET will render the individual TV Show page
     let id = xss(req.params.id);
+    //check if user has posted a review for this show already
+    const showReviews = await showData.getReviewsForShow(s[0]);
+    let reviewAlreadyExistsForUser = false;
+    for (let i=0; i<showReviews.length; i++) {
+        if (showReviews[i].emailAddress === req.session.user.emailAddress) {
+            //user has already posted a review for this show
+            reviewAlreadyExistsForUser = true;
+        }
+    }
     try{
         id = validation.checkString(id);
         let numId = parseInt(id);
@@ -228,14 +237,14 @@ router.route('/:id').get(async (req, res) => {
     if (req.session.user){
         let userSim = await showData.getUserSimiliarShows(req.session.user.emailAddress);
         if (userSim.includes((s[0]._id).toString())) {
-            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: false, check: bool, review: revs, sims: simshows});
+            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: false, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
         }
         else{
-            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: true, check: bool, review: revs, sims: simshows});
+            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: true, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
         }
     }
     else{
-        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows});
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
     }
 });
 
