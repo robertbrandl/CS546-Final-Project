@@ -70,9 +70,10 @@ router
     for (let i=0; i<userReviews.length; i++) {
         if (userReviews[i].showId === showId) {
             //user has already posted a review for this show
-            res.status(409).render('error', {title: "Error", notLoggedIn:false, firstName: req.session.user.firstName, code: 409, errorText: "User has already posted a review for this show"});
+            return res.status(409).render('error', {title: "Error", notLoggedIn:false, firstName: req.session.user.firstName, code: 409, errorText: "User has already posted a review for this show"});
         }
     }
+    let bool = true;
     try {
         //Data Validation
         let uId = validation.checkString(req.session.user._id);
@@ -86,9 +87,15 @@ router
         if (isNaN(reviewInput.ratingInput)) {throw `${reviewInput.ratingInput} is NaN`;}
         if (reviewInput.ratingInput < 1 || reviewInput.ratingInput === Infinity || reviewInput.ratingInput > 10 || (parseFloat(reviewInput.ratingInput) !== parseInt(reviewInput.ratingInput))){throw `${reviewInput.ratingInput} must be integer from 1-10`}
         let cont = validation.checkString(reviewInput.contentInput);
-        console.log(reviewInput.watchAgainInput);
-        if (reviewInput.watchAgainInput === undefined || reviewInput.watchAgainInput === null){throw "watchAgain is null or undefined"}
-        if (typeof reviewInput.watchAgainInput !== "boolean"){throw "watchAgain is not a boolean"}
+        if (!reviewInput.watchAgainInput){
+            bool = false;
+        }
+        else if (reviewInput.watchAgainInput === "true"){
+            bool = true;
+        }
+        else{
+            throw "watchAgain is not a boolean";
+        }
     }
     catch(e) {
         res.status(400).render('createreview', {title: "Create a review for "+showTitle, notLoggedIn: false, firstName: req.session.user.firstName, 
@@ -102,9 +109,9 @@ router
             req.session.user.firstName,
             req.session.user.lastName,
             reviewInput.titleInput,
-            reviewInput.ratingInput,
+            parseInt(reviewInput.ratingInput),
             reviewInput.contentInput,
-            reviewInput.watchAgainInput
+            bool
         );
         if (newReview !== undefined) {
         //if successful, redirect to individual show page
