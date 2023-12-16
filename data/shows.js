@@ -65,26 +65,21 @@ const searchForShow = async(
 
 //use axios with 
 }
-
 const findMenu = async(genre, maxRuntime, minAverageRating) => {
-    console.log(genre, maxRuntime, minAverageRating)
     genre = validation.checkString(genre);
     if (!genre || !maxRuntime || !minAverageRating) {
       throw('Invalid parameters');
     }
-    console.log(genre);
     const allShows = await getAllShows();
     let matchingShows = [];
     for (let show of allShows) {
       if (show.genres.includes(genre) && show.averageRuntime <= maxRuntime && show.rating >= minAverageRating) {
         matchingShows.push(show);
-        console.log(show);
       }
       if (matchingShows.length >= 5) {
         break;
       }
     }
-    console.log(matchingShows);
     return matchingShows.slice(0, 5);
   };
 const filterByGenre = async (filteredGenre, s) => {

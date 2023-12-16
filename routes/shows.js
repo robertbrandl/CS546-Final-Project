@@ -38,16 +38,14 @@ router.route('/searchresults').get(async (req, res) => {
 router.route('/findMenu').get(async (req, res) => {//Don't Know What to Watch? Menu Route
     //code here for GET will render the Don't Know What to Watch? Menu
     return res.render('findmenu', {title: "Don't Know What to Watch?"});
-    
+
+
 
 });
 router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
     //code here for POST 
-    try { 
-        console.log(req.body)
+    try {
         const { genre, maxRuntime, minAverageRating } = req.body;
-        
-        console.log(genre, maxRuntime, minAverageRating )
         let matchingShows = undefined
         try{
             matchingShows = await showData.findMenu(genre, maxRuntime, minAverageRating);
@@ -58,7 +56,6 @@ router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? 
             return res.render('menuresults', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: matchingShows});
         }
         else{
-            console.log("hi")
             return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows});
         }
       } catch (error) {
