@@ -3,12 +3,22 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15pt;
 }
-  
+
 main {
     max-width: 75%;
     margin: auto;
 }
-
+.top-right-nav {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+  }
+p.nameMessage{
+    color:#A2E3C4;
+  }
 a:link {
     color:#A2E3C4;
 }

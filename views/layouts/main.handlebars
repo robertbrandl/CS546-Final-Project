@@ -11,13 +11,13 @@
 </head>
 <body>
     <h1><a href="/">TV Show Recommender</a></h1>
-    <nav>
+    <nav class="top-right-nav">
         {{#if notLoggedIn}}
             <a href = "/user/login"> Log-In </a> <br>
             <a href = "/user/register"> Create an Account </a>
         {{else}}
-            <p> Hi, {{firstName}}</p> <br>
-            <a href = "/user/logout"> Log-Out </a>
+            <p class="nameMessage"> Hi, {{firstName}}!</p> <br>
+            <a href = "/user/logout"> Log-Out </a> <br>
             <a href = "/user/account"> See Your Account! </a>
         {{/if}}
     </nav>
