@@ -48,7 +48,41 @@ const create = async (
     const review = await reviewCollection.findOne({_id: new ObjectId(newId)});
     //handles shows and reviews
     const showCollection = await shows();
-    const updateShow = await showCollection.updateOne({_id: new ObjectId(sId)}, {$push: {reviews: review._id}});
+    const show = await showCollection.findOne({_id: new ObjectId(sId)});
+    let avgR = show.averageRating;
+    let totR = show.reviews.length;
+    let rew = show.rewatchPercent;
+    let updatedAvgR = 0;
+    let updatedrew = 0;
+    if (avgR === 0){
+        updatedAvgR = review.rating;
+    } else{
+        updatedAvgR = ((avgR * totR) + review.rating)/(totR + 1);
+    }
+    if (rew === 0){
+        if (review.watchAgain == true){
+            updatedrew = 100
+        }else{
+            updatedrew = 0
+        }
+    }else{
+        if (review.watchAgain == true){
+            updatedrew = ((rew * totR) + 100)/(totR + 1);
+        }else{
+            updatedrew = ((rew * totR) + 0)/(totR + 1);
+        }
+    }
+    const updateShow = await showCollection.updateOne(
+        { _id: show._id },
+        {
+          $push: { reviews: review._id },
+          $set: {
+            averageRating: updatedAvgR,
+            rewatchPercent: updatedrew,
+          },
+          $inc: { totalRatings: 1 },
+        }
+      );
 	if (!updateShow.acknowledged)
 		throw updateShow;
     const userCollection = await users();

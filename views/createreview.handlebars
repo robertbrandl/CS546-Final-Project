@@ -9,7 +9,7 @@
 <div class="error">{{error}}</div> 
 {{/if}} 
 
-<form id="create-review-form" method="POST" action="/reviews">
+<form id="create-review-form" method="POST" action="/reviews/{{show_id}}/createreview">
     <label for="titleInput">Title</label> 
     <input type="text" name="titleInput" id="titleInput" >
     <label for="ratingInput">Rating</label> 

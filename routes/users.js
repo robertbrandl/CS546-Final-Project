@@ -3,6 +3,7 @@ const router = Router();
 import {userData} from '../data/index.js';
 import * as validation from '../validation.js';
 import validator from 'email-validator';
+import xss from 'xss';
 router
   .route('/register')
   .get(async (req, res) => {
