@@ -1,0 +1,37 @@
+<h1>{{title}}<h1>
+
+
+{{#if error}} 
+<div class="error">{{error}}</div> 
+{{/if}} 
+
+{{#if review}}
+    <h2>Your Previous Review:</h2>
+        <h3>{{title}}</h3>
+        <h4>By: {{authorFirstName}} {{authorLastName}}</h4>
+        <h4>Rating: {{rating}}</h4>
+        <p>{{content}}</p>
+        {{#if watchAgain}}
+            <h4>Would you watch again? YES!</h4>
+        {{else}}
+            <h4>Would you watch again? NO!</h4>
+        {{/if}}
+
+    <h2>Edit Here:</h2>
+    <form id="edit-review-form" method="POST" action="/reviews/edit/{{_id}}">
+        <label for="titleInput">Title</label> 
+        <input type="text" name="titleInput" id="titleInput" >
+        <label for="ratingInput">Rating</label> 
+        <input type="range" name="ratingInput" id="ratingInput" min="0" max="10" oninput="this.nextElementSibling.value = this.value">
+        <output>5</output>
+        <label for="contentInput">Content</label>
+        <input type="text" name="contentInput" id="contentInput">
+        <label for="watchAgainInput">I'd Watch Again</label>
+        <input type="checkbox" name="watchAgainInput" id="watchAgainInput">
+        <label for="submitReviewButton">Save this show:</label> 
+        <button type="submit" id="submitReviewButton">Submit Review</button>
+    </form>
+{{/if}}
+
+
+<p><a href="/user/account">Go to back your user page</a></p>

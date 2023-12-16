@@ -3,6 +3,8 @@ const router = Router();
 import {reviewData} from '../data/index.js';
 import {showData} from '../data/index.js';
 import {userData} from '../data/index.js';
+import {reviews} from '../config/mongoCollections.js';
+
 import * as validation from '../validation.js';
 
 
@@ -146,7 +148,38 @@ router
 //edit existing review
 router
 .route('/edit/:id')
-.put(async (req,res) => {
+.get(async (req, res) => {
+    const userInfo = req.session.user;
+    if (!userInfo) {
+        //user is not logged in
+        return res.redirect('/login');
+    }
+    //id validation
+    let reviewId = req.params.id.trim();
+
+    try{
+        reviewId = validation.checkString(reviewId)
+        if (!ObjectId.isValid(reviewId)) throw 'invalid review id';
+    }catch(e){
+        return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: e})
+    }
+
+    //get review
+    let review = undefined
+    try{
+        const reviewCollection = await reviews();
+        review = await reviewCollection.findOne({_id: new ObjectId(mid)});
+        if (!review){
+            throw `No review with that ID`
+        }
+    }catch(e){
+        return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: e});
+    }
+
+    return res.render('editreview', {title: "Edit Review", notLoggedIn: false, error: false});
+
+})
+.post(async (req,res) => {
     //update a review
     const reviewId = req.params.id.trim();
     const reviewInput = req.body;
