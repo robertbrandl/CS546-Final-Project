@@ -68,13 +68,14 @@ label {
 }
 
 .error {
-    color: #ad2e24;
+    color: #da2c38;
 }
 
 input {
     padding: 10px;
     margin: 10px 0;
-    color: #F0F7F4;
+    background-color: #F0F7F4;
+    color: #3C493F;
     border: 2px solid #F0F7F4;
     transition: width 0.4s ease-in-out;
 }
