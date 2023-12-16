@@ -17,6 +17,9 @@ const create = async (
     let sId = validation.checkString(showId);
     const showCollection = await shows();
     let show = await showCollection.findOne({apiId: parseInt(showId)});
+    if(!show){
+        throw `Invalid show ID, does not exist`
+    }
     if (!ObjectId.isValid(show._id)) throw 'invalid show ID';
     let uId = validation.checkString(userId);
     if (!ObjectId.isValid(uId)) throw 'invalid user ID';
@@ -111,15 +114,18 @@ const update = async (
     if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined"}
 	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
     const updatedReview = {
-        _id: rId,
         title: til,
         rating: rating,
         content: cont,
         watchAgain: watchAgain
     }
     const reviewCollection = await reviews();
-    const updatedInfo = await reviewCollection.findOneAndUpdate(updatedReview);
-    if (!updatedInfo) {
+    const updatedInfo = await reviewCollection.findOneAndUpdate(
+        { _id: new ObjectId(rId) },
+        { $set: updatedReview },
+        { returnDocument: 'after' } 
+    );
+     if (!updatedInfo) {
         //updating review failed
         throw "Could not update review";
     }

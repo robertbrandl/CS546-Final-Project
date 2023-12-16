@@ -165,7 +165,6 @@ router
     }
     //id validation
     let reviewId = req.params.id.trim();
-
     try{
         reviewId = validation.checkString(reviewId)
         if (!ObjectId.isValid(reviewId)) throw 'invalid review id';
@@ -184,8 +183,7 @@ router
     }catch(e){
         return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: e});
     }
-
-    return res.render('editreview', {title: "Edit Review", notLoggedIn: false, error: false});
+    return res.render('editreview', {title: "Edit Review", review:review, notLoggedIn: false, error: false});
 
 })
 .post(async (req,res) => {
@@ -198,38 +196,46 @@ router
         return res.redirect('/login');
     }
     //data validation
+    let bool = true
     try {
         let rId = validation.checkString(reviewId);
         if (!ObjectId.isValid(rId)) throw 'invalid review id';
-        let til = validation.checkString(reviewInput.title);
-        if (reviewInput.rating === undefined || reviewInput.rating === null || !reviewInput.rating){
+        let til = validation.checkString(reviewInput.titleInput);
+        if (reviewInput.ratingInput === undefined || reviewInput.ratingInput === null || !reviewInput.ratingInput){
             throw "The rating is not supplied, null, or undefined";
         }
-        if (typeof reviewInput.rating !== 'number') {throw `${reviewInput.rating} is not a number`;}
-        if (isNaN(reviewInput.rating)) {throw `${reviewInput.rating} is NaN`;}
-        if (reviewInput.rating < 1 || reviewInput.rating === Infinity || reviewInput.rating > 10 || (parseFloat(reviewInput.rating) !== parseInt(reviewInput.rating))){throw `${reviewInput.rating} must be integer from 1-10`}
-        let cont = validation.checkString(reviewInput.content);
-        if (reviewInput.watchAgain === undefined || reviewInput.watchAgain === null){throw "watchAgain is null or undefined"}
-        if (typeof reviewInput.watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
+        if (typeof parseInt(reviewInput.ratingInput) !== 'number') {throw `${reviewInput.ratingInput} is not a number`;}
+        if (isNaN(reviewInput.ratingInput)) {throw `${reviewInput.ratingInput} is NaN`;}
+        if (reviewInput.ratingInput < 1 || reviewInput.ratingInput === Infinity || reviewInput.ratingInput > 10 || (parseFloat(reviewInput.ratingInput) !== parseInt(reviewInput.ratingInput))){throw `${reviewInput.ratingInput} must be integer from 1-10`}
+        let cont = validation.checkString(reviewInput.contentInput);
+        if (!reviewInput.watchAgainInput){
+            bool = false;
+        }
+        else if (reviewInput.watchAgainInput === "true"){
+            bool = true;
+        }
+        else{
+            throw "watchAgain is not a boolean";
+        }
     }
     catch(e) {
-        res.status(400).redirect('error', {title:"Error", notLoggedIn: false, code:400,errorText:e});
+        res.status(400).render('error', {title:"Error", notLoggedIn: false, code:400,errorText:e});
     }
     try {
         //try to update
         const updated = await reviewData.update(
                 reviewId,
-                reviewInput.title,
-                reviewInput.rating,
-                reviewInput.content,
-                reviewInput.watchAgain
+                reviewInput.titleInput,
+                parseInt(reviewInput.ratingInput),
+                reviewInput.contentInput,
+                bool
             );
         if (updated !== undefined) {
             return res.redirect('/user/account');
         }  
     }
     catch(e) {
-        res.status(500).redirect('error', {title:"Error", notLoggedIn: false, code:500,errorText:'review could not be updated'});
+        res.status(500).render('error', {title:"Error", notLoggedIn: false, code:500,errorText:'review could not be updated'});
     }
 });
 
