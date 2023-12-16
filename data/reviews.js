@@ -15,7 +15,9 @@ const create = async (
     watchAgain
 ) => {
     let sId = validation.checkString(showId);
-    if (!ObjectId.isValid(sId)) throw 'invalid show ID';
+    const showCollection = await shows();
+    let show = await showCollection.findOne({apiId: parseInt(showId)});
+    if (!ObjectId.isValid(show._id)) throw 'invalid show ID';
     let uId = validation.checkString(userId);
     if (!ObjectId.isValid(uId)) throw 'invalid user ID';
     let fname = validation.checkString(authorFirstName);
@@ -47,8 +49,6 @@ const create = async (
     const newId = insertInfo.insertedId.toString();
     const review = await reviewCollection.findOne({_id: new ObjectId(newId)});
     //handles shows and reviews
-    const showCollection = await shows();
-    const show = await showCollection.findOne({_id: new ObjectId(sId)});
     let avgR = show.averageRating;
     let totR = show.reviews.length;
     let rew = show.rewatchPercent;
@@ -59,7 +59,7 @@ const create = async (
     } else{
         updatedAvgR = ((avgR * totR) + review.rating)/(totR + 1);
     }
-    if (rew === 0){
+    if (avgR === 0){
         if (review.watchAgain == true){
             updatedrew = 100
         }else{
@@ -79,8 +79,7 @@ const create = async (
           $set: {
             averageRating: updatedAvgR,
             rewatchPercent: updatedrew,
-          },
-          $inc: { totalRatings: 1 },
+          }
         }
       );
 	if (!updateShow.acknowledged)
@@ -133,6 +132,8 @@ const remove = async (reviewId) => {
     if (!ObjectId.isValid(mid)) throw 'invalid object ID';
     const reviewCollection = await reviews();
     const review = await reviewCollection.findOne({_id: new ObjectId(mid)});
+    let showid = review.showId;
+    let uId = review.userId;
     let revid = review._id;
     const deletionInfo = await reviewCollection.findOneAndDelete({
         _id: new ObjectId(mid)
@@ -142,7 +143,42 @@ const remove = async (reviewId) => {
     }
     //need to handle how it affects shows and users
     const showCollection = await shows();
+    let show = await showCollection.findOne({apiId: parseInt(showid)});
+    let avgR = show.averageRating;
+    let totR = show.reviews.length;
+    let rew = show.rewatchPercent;
+    let updatedAvgR = 0;
+    let updatedrew = 0;
+    if (totR === 1){
+        updatedAvgR = 0;
+    } else{
+        updatedAvgR = ((avgR * totR) - review.rating)/(totR - 1);
+    }
+    if (totR === 1){
+        updatedrew = 0;
+    }else{
+        if (review.watchAgain == true){
+            updatedrew = ((rew * totR) - 100)/(totR - 1);
+        }else{
+            updatedrew = ((rew * totR) - 0)/(totR - 1);
+        }
+    }
+    const updateShow = await showCollection.updateOne(
+        { _id: show._id },
+        {
+          $pull: { reviews: review._id },
+          $set: {
+            averageRating: updatedAvgR,
+            rewatchPercent: updatedrew,
+          }
+        }
+      );
+	if (!updateShow.acknowledged)
+		throw updateShow;
     const userCollection = await users();
+    const updateUser = await userCollection.updateOne({_id: new ObjectId(uId)}, {$pull: {reviews: review._id}});
+	if (!updateUser.acknowledged)
+		throw updateUser;
     return {eventName: deletionInfo.eventName, deleted: true};
 }
 export default {create, update, remove};

@@ -160,7 +160,7 @@ router
                 return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
             }
         }
-        return res.render('useraccount', {title: "User Account", notLoggedIn: false, firstName: req.session.user.firstName, lastName: req.session.user.lastName, reviews: revs, savedshows: ss });
+        return res.render('useraccount', {title: "User Account", notLoggedIn: false, firstName: req.session.user.firstName, lastName: req.session.user.lastName, review: revs, savedshows: ss });
     }
     else{
         return res.status(401).render("error", {title: "Error", notLoggedIn: true, code: 401, errorText: "You must be logged in to access this page."})
