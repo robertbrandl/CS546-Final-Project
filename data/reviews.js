@@ -1,6 +1,8 @@
 import * as validation from "../validation.js";
 import {ObjectId} from 'mongodb';
+import {shows} from '../config/mongoCollections.js';
 import {reviews} from '../config/mongoCollections.js';
+import {users} from '../config/mongoCollections.js';
 
 const create = async (
     showId,
@@ -44,7 +46,15 @@ const create = async (
 		throw 'Could not add review';
     const newId = insertInfo.insertedId.toString();
     const review = await reviewCollection.findOne({_id: new ObjectId(newId)});
-    //need to handle how it affects shows and users
+    //handles shows and reviews
+    const showCollection = await shows();
+    const updateShow = await showCollection.updateOne({_id: new ObjectId(sId)}, {$push: {reviews: review._id}});
+	if (!updateShow.acknowledged)
+		throw updateShow;
+    const userCollection = await users();
+    const updateUser = await userCollection.updateOne({_id: new ObjectId(uId)}, {$push: {reviews: review._id}});
+	if (!updateUser.acknowledged)
+		throw updateUser;
     return review;
 }
 
@@ -88,6 +98,8 @@ const remove = async (reviewId) => {
     let mid = helpers.checkString(reviewId);
     if (!ObjectId.isValid(mid)) throw 'invalid object ID';
     const reviewCollection = await reviews();
+    const review = await reviewCollection.findOne({_id: new ObjectId(mid)});
+    let revid = review._id;
     const deletionInfo = await reviewCollection.findOneAndDelete({
         _id: new ObjectId(mid)
     });
@@ -95,6 +107,8 @@ const remove = async (reviewId) => {
         throw `Could not delete event with id of ${mid}`;
     }
     //need to handle how it affects shows and users
+    const showCollection = await shows();
+    const userCollection = await users();
     return {eventName: deletionInfo.eventName, deleted: true};
 }
 export default {create, update, remove};
