@@ -10,15 +10,15 @@ main {
 }
 
 a:link {
-    color:#F0F7F4;
+    color:#A2E3C4;
 }
 
 a:visited {
-    color: #F0F7F4;
+    color: #A2E3C4;
 }
 
 a:hover {
-    color:#A2E3C4;
+    color:#F0F7F4;
 }
 
 a:active {
@@ -45,7 +45,26 @@ h3 {
 
 h4 {
     font-size: 1.50rem;
+    font-weight: normal;
     color: #ff9b71;
+}
+
+p {
+    font-size: 1.25rem;
+    font-weight: normal;
+    color: #F0F7F4;
+}
+
+ul,ol {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: #F0F7F4;
+}
+
+label {
+    font-size: 1.25rem;
+    font-weight: normal;
+    color: #F0F7F4;
 }
 
 .error {
@@ -77,4 +96,4 @@ button {
     text-align: center;
     border-radius:5px;
     width:10%;
-  }
+}
