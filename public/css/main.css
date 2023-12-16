@@ -1,0 +1,45 @@
+body {
+    background: #F0F7F4;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15pt;
+  }
+  
+main {
+    max-width: 75%;
+    margin: auto;
+}
+
+a:link {
+    color:#7E8D85;
+}
+
+a:visited {
+    color: #7E8D85;
+}
+
+a:hover {
+    color:#A2E3C4;
+}
+
+a:active {
+    color: #B3BFB8;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.75rem;
+    font-weight: normal;
+}
+
+h3 {
+    font-size: 1.75rem;
+    font-weight: normal;
+}
+
+
+
+
