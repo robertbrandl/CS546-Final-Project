@@ -128,7 +128,7 @@ const update = async (
 }
 
 const remove = async (reviewId) => {
-    let mid = helpers.checkString(reviewId);
+    let mid = validation.checkString(reviewId);
     if (!ObjectId.isValid(mid)) throw 'invalid object ID';
     const reviewCollection = await reviews();
     const review = await reviewCollection.findOne({_id: new ObjectId(mid)});

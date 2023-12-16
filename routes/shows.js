@@ -174,15 +174,6 @@ router.route('/').get(async (req, res) => {
 router.route('/:id').get(async (req, res) => {
     //code here for GET will render the individual TV Show page
     let id = xss(req.params.id);
-    //check if user has posted a review for this show already
-    const showReviews = await showData.getReviewsForShow(s[0]);
-    let reviewAlreadyExistsForUser = false;
-    for (let i=0; i<showReviews.length; i++) {
-        if (showReviews[i].emailAddress === req.session.user.emailAddress) {
-            //user has already posted a review for this show
-            reviewAlreadyExistsForUser = true;
-        }
-    }
     try{
         id = validation.checkString(id);
         let numId = parseInt(id);
@@ -231,6 +222,15 @@ router.route('/:id').get(async (req, res) => {
         }
         else{
             return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
+        }
+    }
+    //check if user has posted a review for this show already
+    const showReviews = await showData.getReviewsForShow(s[0]);
+    let reviewAlreadyExistsForUser = true;
+    for (let i=0; i<showReviews.length; i++) {
+        if (showReviews[i].userId === req.session.user._id) {
+            //user has already posted a review for this show
+            reviewAlreadyExistsForUser = false;
         }
     }
     if (req.session.user){
