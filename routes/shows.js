@@ -68,7 +68,6 @@ router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? 
         else{
             return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows});
         }
-<<<<<<< HEAD
       } catch (error) {
         if (req.session.user){
             return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: error});
@@ -77,11 +76,6 @@ router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? 
             return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: error});
         }
       }
-=======
-    } catch (error) {
-        res.status(400).send({ error: error.message });
-    }
->>>>>>> 1b652cf (addition of valitation checks and edit handlebars, Draft of ajax form)
 });
 router.route('/filter').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows with the inputted genre
