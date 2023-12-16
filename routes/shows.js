@@ -37,10 +37,12 @@ router.route('/searchresults').get(async (req, res) => {
 });
 router.route('/findMenu').get(async (req, res) => {//Don't Know What to Watch? Menu Route
     //code here for GET will render the Don't Know What to Watch? Menu
-    return res.render('findmenu', {title: "Don't Know What to Watch?"});
-
-
-
+    if (req.session.user){
+        return res.render('findmenu', {title: "Don't Know What to Watch?", notLoggedIn: false, firstName: req.session.user.firstName});
+    }
+    else{
+        return res.render('findmenu', {title: "Don't Know What to Watch?", notLoggedIn: true});
+    }
 });
 router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
     //code here for POST 
