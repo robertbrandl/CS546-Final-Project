@@ -80,7 +80,9 @@ label {
 .error {
     color: #da2c38;
 }
-
+div {
+    color: #da2c38;
+}
 input {
     padding: 10px;
     margin: 10px 0;

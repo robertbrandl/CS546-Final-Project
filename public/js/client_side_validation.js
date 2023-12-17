@@ -100,6 +100,7 @@ let regForm = document.getElementById('registration-form');
 let changePasswordForm = document.getElementById('change-password-form');
 let createReviewForm = document.getElementById('create-review-form');
 let editReviewForm = document.getElementById('edit-review-form');
+let searchForm = document.getElementById('search-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -253,3 +254,24 @@ if (editReviewForm) {
        }
        })
    }
+if (searchForm){
+    //titleInput, ratingInput, contentInput, watchAgainInput
+    const term = document.getElementById('searchTerm');
+    //error-container
+    const errorContainer = document.getElementById('error-container');
+    const errorTextElement =
+    errorContainer.getElementsByClassName('text-goes-here')[0];
+    searchForm.addEventListener('submit', (event) => {
+        try {
+            errorContainer.classList.add('hidden');
+            checkString(term.value, "Search Term");
+            term.value = term.value.trim();
+        }
+        catch(e) {
+            event.preventDefault();
+            const message = typeof e === 'string' ? e: e.message;
+            errorTextElement.textContent = "Error: "+e;
+            errorContainer.classList.remove('hidden');
+        }
+    })
+}
