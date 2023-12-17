@@ -130,6 +130,47 @@ const update = async (
         throw "Could not update review";
     }
     updatedInfo._id = updatedInfo._id.toString();
+
+    //update shows collection 
+
+    const showCollection = await shows();
+    let showid = updatedInfo.showId
+    let show = await showCollection.findOne({_id: new ObjectId(showid)});
+    let avgR = show.averageRating;
+    let totR = show.reviews.length;
+    let rew = show.rewatchPercent;
+    let updatedAvgR = 0;
+    let updatedrew = 0;
+    if (totR === 1){
+        updatedAvgR = rating;
+    } else{
+        updatedAvgR = ((avgR * totR) - rating)/(totR - 1);
+    }
+    if (totR === 1){
+        if(watchAgain){
+            updatedrew = 100
+        }else{
+            updatedrew = 0
+        }
+    }else{
+        if (watchAgain == true){
+            updatedrew = ((rew * totR) + 100)/(totR + 1);
+        }else{
+            updatedrew = ((rew * totR) + 0)/(totR + 1);
+        }
+    }
+    const updateShow = await showCollection.updateOne(
+        { _id: show._id },
+        {
+          $set: {
+            averageRating: updatedAvgR,
+            rewatchPercent: updatedrew,
+          }
+        }
+      );
+	if (!updateShow.acknowledged)
+		throw updateShow;
+
     return updatedInfo;
 }
 
@@ -149,7 +190,7 @@ const remove = async (reviewId) => {
     }
     //need to handle how it affects shows and users
     const showCollection = await shows();
-    let show = await showCollection.findOne({apiId: parseInt(showid)});
+    let show = await showCollection.findOne({_id: new ObjectId(showId)});
     let avgR = show.averageRating;
     let totR = show.reviews.length;
     let rew = show.rewatchPercent;

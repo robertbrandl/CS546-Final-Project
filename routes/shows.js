@@ -225,15 +225,17 @@ router.route('/:id').get(async (req, res) => {
         }
     }
     //check if user has posted a review for this show already
-    const showReviews = await showData.getReviewsForShow(s[0]);
-    let reviewAlreadyExistsForUser = true;
-    for (let i=0; i<showReviews.length; i++) {
-        if (showReviews[i].userId === req.session.user._id) {
-            //user has already posted a review for this show
-            reviewAlreadyExistsForUser = false;
-        }
-    }
+
     if (req.session.user){
+        const showReviews = await showData.getReviewsForShow(s[0]);
+        let reviewAlreadyExistsForUser = true;
+        for (let i=0; i<showReviews.length; i++) {
+            if (showReviews[i].userId === req.session.user._id) {
+                //user has already posted a review for this show
+                reviewAlreadyExistsForUser = false;
+            }
+        }
+        
         let userSim = await showData.getUserSimiliarShows(req.session.user.emailAddress);
         if (userSim.includes((s[0]._id).toString())) {
             return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: false, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
@@ -241,9 +243,10 @@ router.route('/:id').get(async (req, res) => {
         else{
             return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: true, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
         }
+
     }
     else{
-        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows});
     }
 });
 
