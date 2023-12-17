@@ -35,9 +35,15 @@ const create = async (
     let cont = validation.checkString(content);
     //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
 	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
-    let watchBool = false;
+    let watchBool;
     if (watchAgain == true) {
         watchBool = true;
+    }
+    else if (!watchAgain || watchAgain===undefined) {
+        watchBool = false;
+    }
+    else {
+        throw "watchAgain is not a boolean";
     }
     let newReview = { 
         showId: sId,
@@ -117,9 +123,15 @@ const update = async (
     let cont = validation.checkString(content);
     //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined"}
 	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
-    let watchBool = false;
+    let watchBool;
     if (watchAgain == true) {
         watchBool = true;
+    }
+    else if (!watchAgain || watchAgain===undefined) {
+        watchBool = false;
+    }
+    else {
+        throw "watchAgain is not a boolean";
     }
     const updatedReview = {
         title: til,
