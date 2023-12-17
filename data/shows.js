@@ -65,20 +65,22 @@ const searchForShow = async(
 }
 const findMenu = async(genre, maxRuntime, minAverageRating) => {
     genre = validation.checkString(genre);
-    if (maxRuntime === null || maxRuntime === undefined){ throw "maxRuntime is not valid"}
-    if (minAverageRating === null || minAverageRating === undefined){ throw "maxRuntime is not valid"}
-    if (typeof maxRuntime !== 'number' || isNaN(maxRuntime) || maxRuntime === Infinity) {
-      throw('Please enter a valid number');
+    if (maxRuntime === null || maxRuntime === undefined) {
+        throw new Error('maxRuntime is not valid');
     }
-    if (typeof minAverageRating !== 'number' || isNaN(minAverageRating) || minAverageRating === Infinity) {
-        throw('Please enter a valid number');
-        }
-    if (maxRuntime < 0 || maxRuntime > 1000) {
-        throw('Please a valid number greater than 0 and less than 1000');
+
+    if (minAverageRating === null || minAverageRating === undefined) {
+        throw new Error('minAverageRating is not valid');
     }
-    if (minAverageRating < 0 || minAverageRating > 10) {
-        throw('Please a valid rating between 0 and 10');
+
+    if (typeof maxRuntime !== 'number' || isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0 || maxRuntime > 1000) {
+        throw new Error('Please enter a valid number for maxRuntime between 0 and 1000');
     }
+
+    if (typeof minAverageRating !== 'number' || isNaN(minAverageRating) || minAverageRating === Infinity || minAverageRating < 0 || minAverageRating > 10) {
+        throw new Error('Please enter a valid number for minAverageRating between 0 and 10');
+    }
+
     const allShows = await getAllShows();
     let matchingShows = [];
     for (let show of allShows) {
