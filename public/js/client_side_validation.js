@@ -134,9 +134,7 @@ if (loginForm) {
                     throw new Error(jsonData.message);
                 }
             } catch (error) {
-                
-                console.error('The server returned an HTML response:', data);
-                errorTextElement.textContent = 'Error: ' + error.message;
+                errorTextElement.textContent = error.message;
                 errorContainer.classList.remove('hidden');
                 if (otherErrorTextElement) {
                     otherErrorTextElement.style.display = 'none';
