@@ -1,4 +1,3 @@
-//const { create } = require("express-handlebars");
 
 function checkString(str, fieldName){
     if (!str || str === undefined){
@@ -97,64 +96,41 @@ function checkCreateReviewInput(title, rating, content, watchAgain){
 let loginForm = document.getElementById('login-form');
 let regForm = document.getElementById('registration-form');
 let changePasswordForm = document.getElementById('change-password-form');
-let createReviewForm = document.getElementById('create-review-form');
 if (loginForm) {
-    const email = document.getElementById('emailAddressInput');
-    const password= document.getElementById('passwordInput');
-    const errorContainer = document.getElementById('error-container');
-    const errorTextElement =
-      errorContainer.getElementsByClassName('text-goes-here')[0];
-    const otherErrorTextElement =
-      document.getElementsByClassName('error')[0];
-    loginForm.addEventListener('submit', (event) =>{
-        try{
-            errorContainer.classList.add('hidden');
-            let loginR = checkLoginInput(email.value, password.value);
-        }catch(e){
-            event.preventDefault();
-            const message = typeof e === 'string' ? e : e.message;
-            errorTextElement.textContent = "Error: " + e;
-            errorContainer.classList.remove('hidden');
-            if (otherErrorTextElement){
-                otherErrorTextElement.style.display = "none";
+    loginForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const email = document.getElementById('emailAddressInput').value;
+        const password = document.getElementById('passwordInput').value;
+        const errorContainer = document.getElementById('error-container');
+        const errorTextElement = errorContainer.querySelector('.text-goes-here');
+        const otherErrorTextElement = document.querySelector('.error');
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+
+        fetch('/login', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            errorTextElement.textContent = 'Error: ' + error.message;
+            errorContainer.classList.remove('hidden');
+            if (otherErrorTextElement) {
+                otherErrorTextElement.style.display = 'none';
+            }
+        });
     });
 }
-/*if (loginForm) {
-    const email = document.getElementById('emailAddressInput');
-    const password= document.getElementById('passwordInput');
-    const errorContainer = document.getElementById('error-container');
-    const errorTextElement =
-      errorContainer.getElementsByClassName('text-goes-here')[0];
-    const otherErrorTextElement =
-      document.getElementsByClassName('error')[0];
-    loginForm.addEventListener('submit', async (event) =>{
-        try{
-            event.preventDefault();
-            errorContainer.classList.add('hidden');
-            let loginR = checkLoginInput(email.value, password.value);
-            const response = await fetch('/login', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: email.value,
-                        password: password.value
-                    })
-                });
-        }catch(e){
-            event.preventDefault();
-            const message = typeof e === 'string' ? e : e.message;
-            errorTextElement.textContent = "Error: " + e;
-            errorContainer.classList.remove('hidden');
-            if (otherErrorTextElement){
-                otherErrorTextElement.style.display = "none";
-            }
-        }
-    });
-}*/
 if (regForm) {
     const firstName = document.getElementById('firstNameInput');
     const lastName = document.getElementById('lastNameInput');
