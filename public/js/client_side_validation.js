@@ -217,7 +217,7 @@ if (createReviewForm) {
  errorContainer.getElementsByClassName('text-goes-here')[0];
  const otherErrorTextElement =
  document.getElementsByClassName('error')[0];
- regForm.addEventListener('submit', (event) => {
+ createReviewForm.addEventListener('submit', (event) => {
     try {
         errorContainer.classList.add('hidden');
         let createRev = checkCreateReviewInput(title.value,rating.value,content.value, watchAgain.value);
