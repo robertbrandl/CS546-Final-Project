@@ -70,7 +70,7 @@ function checkChangePasswordInput(
     return true;
 }
 
-function checkCreateReviewInput(title, rating, content, watchAgain){
+function checkCreateReviewInput(title, rating, content){
    let checkTitle = checkString(title, "Title");
    if (rating === undefined || rating === null || !rating){
     throw "The rating is not supplied, null, or undefined";
@@ -79,8 +79,8 @@ function checkCreateReviewInput(title, rating, content, watchAgain){
     if (isNaN(rating)) {throw `${rating} is NaN`;}
     if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid';}
    let checkContent=  checkString(content, "Review Content");
-   if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
-	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
+   //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
+	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
     return true;
 }
 
@@ -210,7 +210,11 @@ if (createReviewForm) {
  regForm.addEventListener('submit', (event) => {
     try {
         errorContainer.classList.add('hidden');
-        let createRev = checkCreateReviewInput(title.value,rating.value,content.value,watchAgain.value);
+        //let watchBool = false;
+        //if (watchAgain == true) {
+        //watchBool = true;
+        //}
+        let createRev = checkCreateReviewInput(title.value,rating.value,content.value);
     }
     catch(e) {
         event.preventDefault();
