@@ -143,6 +143,8 @@ const update = async (
         watchAgain: watchBool
     }
     const reviewCollection = await reviews();
+    const review = await reviewCollection.findOne(
+        { _id: new ObjectId(rId) })
     const updatedInfo = await reviewCollection.findOneAndUpdate(
         { _id: new ObjectId(rId) },
         { $set: updatedReview },
@@ -167,8 +169,10 @@ const update = async (
     if (totR === 1){
         updatedAvgR = rating;
     } else{
-        updatedAvgR = ((avgR * totR) - rating)/(totR - 1);
+        updatedAvgR = ((avgR * totR) - review.rating + rating)/(totR);
     }
+    let rewatch = 0;
+    if (review.rewatchPercent == true){ rewatch = 100}
     if (totR === 1){
         if(watchAgain){
             updatedrew = 100
@@ -177,9 +181,9 @@ const update = async (
         }
     }else{
         if (watchAgain == true){
-            updatedrew = ((rew * totR) + 100)/(totR + 1);
+            updatedrew = ((rew * totR) - rewatch + 100)/(totR);
         }else{
-            updatedrew = ((rew * totR) + 0)/(totR + 1);
+            updatedrew = ((rew * totR) - rewatch + 0)/(totR);
         }
     }
     const updateShow = await showCollection.updateOne(

@@ -256,9 +256,9 @@ if (searchForm){
     //titleInput, ratingInput, contentInput, watchAgainInput
     const term = document.getElementById('searchTerm');
     //error-container
-    const errorContainer = document.getElementById('error-container');
+    const errorContainer = document.getElementById('error-container-main');
     const errorTextElement =
-    errorContainer.getElementsByClassName('text-goes-here')[0];
+    errorContainer.getElementsByClassName('text-goes-here-search')[0];
     searchForm.addEventListener('submit', (event) => {
         try {
             errorContainer.classList.add('hidden');
