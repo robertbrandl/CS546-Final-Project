@@ -1,5 +1,9 @@
 <h1>{{title}}</h1>
 <h2>Filter or sort all shows here</h2>
+<div class="form-group hidden" id="error-container">
+        <div class="text-goes-here">
+        </div>
+</div>
 <form id="filter-form" method="GET" action="/shows/filter"> 
     <label for="filterGenre">Filter all shows by genre:</label>
     <select id="filterGenre" name="filterGenre" required>
