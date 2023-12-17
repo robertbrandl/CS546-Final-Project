@@ -93,8 +93,8 @@ const create = async (
         {
           $push: { reviews: review._id },
           $set: {
-            averageRating: updatedAvgR,
-            rewatchPercent: updatedrew,
+            averageRating: parseFloat(updatedAvgR.toFixed(1)),
+            rewatchPercent: Math.round(updatedrew),
           }
         }
       );
@@ -143,6 +143,14 @@ const update = async (
         watchAgain: watchBool
     }
     const reviewCollection = await reviews();
+    //get old rev to help recalculations
+    let oldReview = await reviewCollection.findOne({_id: new ObjectId(rId)})
+    let percent = undefined
+    if(oldReview.watchAgain){
+        percent = 100
+    }else{
+        percent = 0
+    }
     const updatedInfo = await reviewCollection.findOneAndUpdate(
         { _id: new ObjectId(rId) },
         { $set: updatedReview },
@@ -167,7 +175,7 @@ const update = async (
     if (totR === 1){
         updatedAvgR = rating;
     } else{
-        updatedAvgR = ((avgR * totR) - rating)/(totR - 1);
+        updatedAvgR = ((avgR * totR) - oldReview.rating + rating)/(totR)
     }
     if (totR === 1){
         if(watchAgain){
@@ -177,17 +185,17 @@ const update = async (
         }
     }else{
         if (watchAgain == true){
-            updatedrew = ((rew * totR) + 100)/(totR + 1);
+            updatedrew = ((rew * totR) -  percent + 100)/(totR);
         }else{
-            updatedrew = ((rew * totR) + 0)/(totR + 1);
+            updatedrew = ((rew * totR) - percent)/(totR);
         }
     }
     const updateShow = await showCollection.updateOne(
         { _id: show._id },
         {
           $set: {
-            averageRating: updatedAvgR,
-            rewatchPercent: updatedrew,
+            averageRating: parseFloat(updatedAvgR.toFixed(1)),
+            rewatchPercent: Math.round(updatedrew),
           }
         }
       );
@@ -238,8 +246,8 @@ const remove = async (reviewId) => {
         {
           $pull: { reviews: review._id },
           $set: {
-            averageRating: updatedAvgR,
-            rewatchPercent: updatedrew,
+            averageRating: parseFloat(updatedAvgR.toFixed(1)),
+            rewatchPercent: Math.round(updatedrew),
           }
         }
       );
