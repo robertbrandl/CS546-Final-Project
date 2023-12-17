@@ -50,20 +50,18 @@ const searchForShow = async(
         let show = await showCollection.findOne({apiId: x.id});
         if (show !== null){
             if (show.averageRating === 0){
-                arr.push({name: x.name, apiId: x.id, plot: x.summary.replace(/<[^>]*>/g, ''), rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: true});
+                arr.push({name: x.name, apiId: x.id, plot: x.summary ? x.summary.replace(/<[^>]*>/g, '') : '', rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: true});
             }
             else{
-                arr.push({name: x.name, apiId: x.id, plot: x.summary.replace(/<[^>]*>/g, ''), rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: false});
+                arr.push({name: x.name, apiId: x.id, plot: x.summary ? x.summary.replace(/<[^>]*>/g, '') : '', rating: show.averageRating, genres: x.genres, rewatchPercent: show.rewatchPercent, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: false});
             }
             
         }
         else{
-            arr.push({name: x.name, apiId: x.id, plot: x.summary.replace(/<[^>]*>/g, ''), rating: 0, genres: x.genres, rewatchPercent: 0, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: true});
+            arr.push({name: x.name, apiId: x.id, plot: x.summary ? x.summary.replace(/<[^>]*>/g, '') : '', rating: 0, genres: x.genres, rewatchPercent: 0, averageRuntime: x.averageRuntime == null ? x.runtime : x.averageRuntime, check: true});
         }
     }
     return arr;
-
-//use axios with 
 }
 const findMenu = async(genre, maxRuntime, minAverageRating) => {
     genre = validation.checkString(genre);
