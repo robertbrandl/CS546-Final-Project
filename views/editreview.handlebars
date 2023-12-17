@@ -1,10 +1,5 @@
 <h1>{{title}}</h1>
 
-
-{{#if error}} 
-<div class="error">{{error}}</div> 
-{{/if}} 
-
 {{#if review}}
     <h2>Your Previous Review:</h2>
         <h3>{{review.title}}</h3>
@@ -17,6 +12,13 @@
         {{/if}}
 
     <h2>Edit Here:</h2>
+    <div class="form-group hidden" id="error-container">
+        <div class="text-goes-here">
+        </div>
+    </div>
+    {{#if error}} 
+        <div class="error">{{error}}</div> 
+    {{/if}} 
     <form id="edit-review-form" method="POST" action="/reviews/edit/{{review._id}}">
         <label for="titleInput">Title</label> 
         <input type="text" name="titleInput" id="titleInput" value="{{review.title}}">
