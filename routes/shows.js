@@ -52,7 +52,7 @@ router.route('/findMenu').post(async (req, res) => {
         maxRuntime = Number(xss(maxRuntime));
         minAverageRating = Number(xss(minAverageRating));
 
-        if (isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0 ) {
+        if (isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0 || maxRuntime > 1000) {
             throw 'Please enter a valid number for maximum runtime';
         } 
         if (isNaN(minAverageRating) || minAverageRating === Infinity || minAverageRating < 0 || minAverageRating > 10) {

@@ -75,8 +75,8 @@ const findMenu = async(genre, maxRuntime, minAverageRating) => {
     if (typeof minAverageRating !== 'number' || isNaN(minAverageRating) || minAverageRating === Infinity) {
         throw('Please enter a valid number');
         }
-    if (maxRuntime < 0) {
-        throw('Please a valid number greater than 0');
+    if (maxRuntime < 0 || maxRuntime > 1000) {
+        throw('Please a valid number greater than 0 and less than 1000');
     }
     if (minAverageRating < 0 || minAverageRating > 10) {
         throw('Please a valid rating between 0 and 10');
