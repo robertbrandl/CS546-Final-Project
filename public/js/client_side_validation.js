@@ -81,7 +81,7 @@ function checkCreateReviewInput(title, rating, content, watchAgain){
    let checkContent=  checkString(content, "Review Content");
    //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
 	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
-    console.log(watchAgain);
+    //console.log(watchAgain);
     let watchBool;
     if (watchAgain == "true") {
         watchBool = true;
@@ -91,6 +91,20 @@ function checkCreateReviewInput(title, rating, content, watchAgain){
     }
     else {
         throw "watchAgain is not a boolean";
+    }
+    return true;
+}
+
+function checkUpvote(upvote) {
+    let upvoteBool;
+    if (upvote == "true") {
+        upvoteBool = true;
+    }
+    else if (!upvote || upvote===undefined) {
+        upvoteBool = false;
+    }
+    else {
+        throw "upvote is not a boolean";
     }
     return true;
 }
@@ -270,6 +284,21 @@ if (searchForm){
             const message = typeof e === 'string' ? e: e.message;
             errorTextElement.textContent = "Error: "+e;
             errorContainer.classList.remove('hidden');
+        }
+    })
+}
+
+let upvoteForm = document.getElementById('upvote-form');
+if (upvoteForm) {
+    let upvoteButton = document.getElementById('upvote-click');
+    upvoteButton.addEventListener('click', (event) => {
+        try {
+            let check = checkUpvote(upvoteButton);
+        }
+        catch(e) {
+            event.preventDefault();
+            const message = typeof e === 'string' ? e: e.message;
+            console.log(message);
         }
     })
 }

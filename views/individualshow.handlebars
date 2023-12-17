@@ -87,6 +87,11 @@
         {{else}}
             <h4>Would you watch again? NO!</h4>
         {{/if}}
+        <h4>Upvote Count: {{upvotes}}</h4>
+        <form id="upvote-form" method="POST" action="/reviews/{{apiId}}/{{_id}}/addUpvote">
+            <label for="upvote-click">Upvote Review </label>
+            <input type="checkbox" name="upvote-click" id="upvote-click" value="true">
+        </form>
     {{/each}}
 {{else}}
     <h3>None Posted Yet!</h3>

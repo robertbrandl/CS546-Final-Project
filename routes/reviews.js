@@ -241,5 +241,41 @@ router
         res.status(500).render('error', {title:"Error", notLoggedIn: false, firstName: req.session.user.firstName, code:500,errorText:'review could not be updated'});
     }
 });
+//get and add/remove upvotes
+router
+
+.route('/:id/review/addUpvote')
+.post(async (req,res) => {
+    let revs = undefined;
+    s = [await showData.getIndividualShow(req.params.id)];
+    try{
+        revs = await showData.getReviewsForShow(s[0]);
+    }
+    catch(e){
+        if (req.session.user){
+            return res.status(500).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 500, errorText: e})
+        }
+        else{
+            return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
+        }
+    }
+    if (req.session.user) {
+        let user = await userData.getUser(req.session.user.emailAddress);
+        //let reviewId = xss(req.params.id);
+        const updateUpvoteForUser = await userData.updateUpvoteForUser(user,req.params.review);
+        if (updateUpvoteForUser) {
+            //upvote added
+            let addVote = await reviewData.addUpvote(req.params.review);
+        }
+        else {
+            //upvote removed
+            let removeVote = await reviewData.removeUpvote(req.params.review);
+        }
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: false, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
+    }
+    else {
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows});
+    } 
+})
 
 export default router;
