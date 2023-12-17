@@ -19,14 +19,14 @@
     <h2>Edit Here:</h2>
     <form id="edit-review-form" method="POST" action="/reviews/edit/{{review._id}}">
         <label for="titleInput">Title</label> 
-        <input type="text" name="titleInput" id="titleInput" >
+        <input type="text" name="titleInput" id="titleInput" value="{{review.title}}">
         <label for="ratingInput">Rating</label> 
-        <input type="range" name="ratingInput" id="ratingInput" min="0" max="10" oninput="this.nextElementSibling.value = this.value">
-        <output>5</output>
+        <input type="range" name="ratingInput" id="ratingInput" min="0" max="10" oninput="this.nextElementSibling.value = this.value" value="{{review.rating}}">
+        <output>{{review.rating}}</output>
         <label for="contentInput">Content</label>
-        <input type="text" name="contentInput" id="contentInput">
+        <input type="text" name="contentInput" id="contentInput" value="{{review.content}}">
         <label for="watchAgainInput">I'd Watch Again </label>
-        <input type="checkbox" name="watchAgainInput" id="watchAgainInput" value="true">
+        <input type="checkbox" {{#if review.watchAgain}}checked{{/if}} name="watchAgainInput" id="watchAgainInput" value="true">
         <label for="submitReviewButton">Submit the Edited Review:</label> 
         <button type="submit" id="submitReviewButton">Submit Review</button>
     </form>
