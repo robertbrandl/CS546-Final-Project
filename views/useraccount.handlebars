@@ -1,8 +1,10 @@
 <h1>{{title}}</h1>
 <h2>First Name: {{firstName}}</h2>
 <h2>Last Name: {{lastName}}</h2>
-<label for="changePasswordButton">Click here if you would like to change your password to login:</label>
-<button id="changePasswordButton"><a href="/user/changepassword">Change your password.</a></button>
+<form id="changePasswordButtonForm" action="/user/changepassword" method="GET">
+    <label for="changePasswordButton">Click here if you would like to change your password to login:</label>
+    <button id="changePasswordButton">Change your password.</button>
+</form>
 <h2>Your Reviews: </h2>
 {{#if review}}
     {{#each review}}
@@ -16,13 +18,13 @@
         {{else}}
             <h4>Would you watch again? NO!</h4>
         {{/if}}
-        <form id="editReviewSubmitForm" action="/reviews/edit/{{_id}}" method="GET">
-            <label for="editReviewSubmitButton">Edit this review:</label> 
-            <button type="submit" id="editReviewSubmitButton">Edit Review</button>
+        <form class="editReviewSubmitForm" action="/reviews/edit/{{_id}}" method="GET">
+            <label>Edit this review:</label> 
+            <button type="submit" class="editReviewSubmitButton">Edit Review</button>
         </form>
-        <form id="deleteReviewForm" action="/reviews/delete/{{_id}}" method="GET">
-            <label for="deleteReviewButton">Delete this review:</label> 
-            <button type="submit" id="deleteReviewButton">Delete Review</button>
+        <form class="deleteReviewForm" action="/reviews/delete/{{_id}}" method="GET">
+            <label>Delete this review:</label> 
+            <button type="submit" class="deleteReviewButton">Delete Review</button>
         </form>
     {{/each}}
 {{else}}
