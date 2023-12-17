@@ -101,6 +101,8 @@ let changePasswordForm = document.getElementById('change-password-form');
 let createReviewForm = document.getElementById('create-review-form');
 let editReviewForm = document.getElementById('edit-review-form');
 let searchForm = document.getElementById('search-form');
+let filterForm = document.getElementById('filter-form');
+let sortForm = document.getElementById('sort-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -253,7 +255,6 @@ if (editReviewForm) {
        })
    }
 if (searchForm){
-    //titleInput, ratingInput, contentInput, watchAgainInput
     const term = document.getElementById('searchTerm');
     //error-container
     const errorContainer = document.getElementById('error-container-main');
@@ -264,6 +265,51 @@ if (searchForm){
             errorContainer.classList.add('hidden');
             checkString(term.value, "Search Term");
             term.value = term.value.trim();
+        }
+        catch(e) {
+            event.preventDefault();
+            const message = typeof e === 'string' ? e: e.message;
+            errorTextElement.textContent = "Error: "+e;
+            errorContainer.classList.remove('hidden');
+        }
+    })
+}
+if (filterForm){
+    const genre = document.getElementById('filterGenre');
+    //error-container
+    const errorContainer = document.getElementById('error-container-main');
+    const errorTextElement =
+    errorContainer.getElementsByClassName('text-goes-here-search')[0];
+    filterForm.addEventListener('submit', (event) => {
+        try {
+            errorContainer.classList.add('hidden');
+            checkString(genre.value, "Filter Genre");
+            genre.value = genre.value.trim();
+            let allgenres = ['Comedy', 'History', 'Sports', 'Horror', 'Adventure', 'Crime', 'Supernatural', 'Action', 'Anime', 'Science-Fiction', 'Drama', 'Legal', 'Thriller', 'Fantasy', 'Family', 'War', 'Medical', 'Espionage', 'Romance', 'Music', 'Western', 'Mystery'];
+            allgenres = allgenres.map(element => element.toLowerCase());
+            if (!allgenres.includes(genre.value.toLowerCase())){ throw "Genre name is not valid";}
+        }
+        catch(e) {
+            event.preventDefault();
+            const message = typeof e === 'string' ? e: e.message;
+            errorTextElement.textContent = "Error: "+e;
+            errorContainer.classList.remove('hidden');
+        }
+    })
+}
+if (sortForm){
+    const sortF = document.getElementById('sortFeature');
+    //error-container
+    const errorContainer = document.getElementById('error-container-main');
+    const errorTextElement =
+    errorContainer.getElementsByClassName('text-goes-here-search')[0];
+    sortForm.addEventListener('submit', (event) => {
+        try {
+            errorContainer.classList.add('hidden');
+            checkString(sortF.value, "Sort Feature");
+            sortF.value = sortF.value.trim();
+            let allfeatures = ['runtime', 'rating', 'rewatch'];
+            if (!allfeatures.includes(sortF.value.toLowerCase())){throw "Sort feature is invalid"}
         }
         catch(e) {
             event.preventDefault();

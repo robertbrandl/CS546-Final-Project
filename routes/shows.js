@@ -140,6 +140,15 @@ router.route('/sort').get(async (req, res) => {
             return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Feature cannot be empty and must be a valid string"});
         }
       }
+    let allfeatures = ['runtime', 'rating', 'rewatch'];
+    if (!allfeatures.includes(feature.toLowerCase())){
+          if (req.session.user){
+              return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Sort feature is not valid"});
+          }
+          else{
+              return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Sort feature is not valid"});
+          }
+      }
     try{
         let s = await showData.sortByFeature(feature, shows);
         if (req.session.user){
