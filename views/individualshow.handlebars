@@ -94,12 +94,20 @@
 <h2>Similar Shows: </h2>
 {{#each sims}}
     <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>
-    <h3>Average Rating: {{rating}}</h3>
-    <h3>Genres:</h3>
-    <ul>
-        {{#each genres}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
+    {{#if plot}}
+        <p>Plot Synopsis: {{plot}}</p>
+    {{else}}
+        <p>Plot Synopsis: Not Found</p>
+    {{/if}}
+    {{#if genres}}
+        <h3>Genres:</h3>
+        <ul>
+            {{#each genres}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <h3>Genres: None Found</h3>
+    {{/if}}
 {{/each}}
 <script src='../public/js/client_side_validation.js'></script>
