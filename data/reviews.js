@@ -58,7 +58,6 @@ const create = async (
         content: cont,
         watchAgain: watchBool
     }
-    console.log("This is in data func ",showTitle);
     const reviewCollection = await reviews();
     const insertInfo = await reviewCollection.insertOne(newReview);
 	if (!insertInfo.acknowledged || !insertInfo.insertedId)

@@ -63,7 +63,6 @@ router
             return res.status(404).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 404, errorText: "Show cannot be found"});
     }
     let showTitle = show.name;
-    console.log("line 66 in routes ",showTitle);
     const reviewInput = req.body;
     //check if user has posted a review for this show already
     let user = await userData.getUser(req.session.user.emailAddress);
@@ -116,7 +115,6 @@ router
             reviewInput.contentInput,
             bool
         );
-        console.log("This is in routes func ",show.name);
         if (newReview !== undefined) {
         //if successful, redirect to individual show page
             return res.redirect('/shows/'+showId);
@@ -240,7 +238,6 @@ router
         }  
     }
     catch(e) {
-        console.log(e)
         res.status(500).render('error', {title:"Error", notLoggedIn: false, firstName: req.session.user.firstName, code:500,errorText:'review could not be updated'});
     }
 });
