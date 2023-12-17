@@ -71,7 +71,17 @@ function checkChangePasswordInput(
 }
 
 function checkCreateReviewInput(title, rating, content, watchAgain){
-    
+   let checkTitle = checkString(title, "Title");
+   if (rating === undefined || rating === null || !rating){
+    throw "The rating is not supplied, null, or undefined";
+    }
+    if (typeof rating !== 'number') {throw `${rating} is not a number`;}
+    if (isNaN(rating)) {throw `${rating} is NaN`;}
+    if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid';}
+   let checkContent=  checkString(content, "Review Content");
+   if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
+	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
+    return true;
 }
 
 let loginForm = document.getElementById('login-form');

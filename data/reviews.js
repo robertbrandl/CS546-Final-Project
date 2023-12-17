@@ -31,10 +31,10 @@ const create = async (
     }
     if (typeof rating !== 'number') {throw `${rating} is not a number`;}
     if (isNaN(rating)) {throw `${rating} is NaN`;}
-    if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid'}
+    if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid';}
     let cont = validation.checkString(content);
-    if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined"}
-	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
+    if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
+	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
     let newReview = { 
         showId: sId,
         userId: uId,
