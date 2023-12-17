@@ -7,6 +7,7 @@ import {users} from '../config/mongoCollections.js';
 const create = async (
     showId,
     userId,
+    showTitle,
     authorFirstName,
     authorLastName,
     title,
@@ -21,6 +22,7 @@ const create = async (
         throw `Invalid show ID, does not exist`
     }
     if (!ObjectId.isValid(show._id)) throw 'invalid show ID';
+    showTitle = show.name;
     let uId = validation.checkString(userId);
     if (!ObjectId.isValid(uId)) throw 'invalid user ID';
     let fname = validation.checkString(authorFirstName);
@@ -48,6 +50,7 @@ const create = async (
     let newReview = { 
         showId: show._id,
         userId: uId,
+        showTitle: showTitle,
         authorFirstName: fname,
         authorLastName: lname,
         title: til,
@@ -55,6 +58,7 @@ const create = async (
         content: cont,
         watchAgain: watchBool
     }
+    console.log("This is in data func ",showTitle);
     const reviewCollection = await reviews();
     const insertInfo = await reviewCollection.insertOne(newReview);
 	if (!insertInfo.acknowledged || !insertInfo.insertedId)
