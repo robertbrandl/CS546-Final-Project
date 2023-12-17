@@ -1,6 +1,8 @@
 
 <h1>Find a Show</h1> 
-
+    <div class="error-message">
+        {{ error }}
+    </div>
 <form action="/shows/findMenu" method="post">
   <label for="genre">Genre:</label>
   <select id="genre" name="genre" required>

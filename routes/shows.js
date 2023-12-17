@@ -45,21 +45,20 @@ router.route('/findMenu').get(async (req, res) => {//Don't Know What to Watch? M
         return res.render('findmenu', {title: "Don't Know What to Watch?", notLoggedIn: true});
     }
 });
-router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
-    //code here for POST 
+router.route('/findMenu').post(async (req, res) => {
     try {
         let {genre, maxRuntime, minAverageRating} = req.body;
         genre = validation.checkString(xss(genre));
-        maxRuntime = validation.checkString(xss(maxRuntime));
-        minAverageRating = validation.checkString(xss(minAverageRating));
-        maxRuntime = Number(maxRuntime);
-        minAverageRating = Number(minAverageRating);
-        if (isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0) {
-            throw 'Please enter a valid number for max runtime';
-        }
+        maxRuntime = Number(xss(maxRuntime));
+        minAverageRating = Number(xss(minAverageRating));
+
+        if (isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0 ) {
+            throw 'Please enter a valid number for maximum runtime';
+        } 
         if (isNaN(minAverageRating) || minAverageRating === Infinity || minAverageRating < 0 || minAverageRating > 10) {
             throw 'Please enter a valid rating between 0 and 10' ;
         }
+
         let matchingShows = await showData.findMenu(genre, maxRuntime, minAverageRating);
         if (matchingShows.length < 1) {
             if (req.session.user){
@@ -77,14 +76,14 @@ router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? 
                 return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows,noShows:false});
             }
         }
-      } catch (error) {
+    } catch (error) {
         if (req.session.user){
-            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: error});
+            return res.render('findMenu', {title: "Find Menu", notLoggedIn: false, firstName: req.session.user.firstName, error: error});
         }
         else{
-            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: error});
+            return res.render('findMenu', {title: "Find Menu", notLoggedIn: true, error: error});
         }
-      }
+    }
 });
 router.route('/filter').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows with the inputted genre
