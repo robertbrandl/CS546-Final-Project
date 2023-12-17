@@ -7,25 +7,25 @@ await db.dropDatabase();
 
 //Adds shows to the database
 let show1 = await shows.getIndividualShow("31"); //Marvel's Agents of S.H.I.E.L.D.
-const s1id = show1._id.toString();
+const s1id = show1.apiId.toString();
 let show2 = await shows.getIndividualShow("24"); //Hawaii Five-O
-const s2id = show2._id.toString();
+const s2id = show2.apiId.toString();
 let show3 = await shows.getIndividualShow("40"); //Death Note
-const s3id = show3._id.toString();
+const s3id = show3.apiId.toString();
 let show4 = await shows.getIndividualShow("19"); //Supernatural
-const s4id = show4._id.toString();
+const s4id = show4.apiId.toString();
 let show5 = await shows.getIndividualShow("323"); //White Collar
-const s5id = show5._id.toString();
+const s5id = show5.apiId.toString();
 let show6 = await shows.getIndividualShow("62068"); //The Rookie: Feds
-const s6id = show6._id.toString();
+const s6id = show6.apiId.toString();
 let show7 = await shows.getIndividualShow("82"); //Game of Thrones
-const s7id = show7._id.toString();
+const s7id = show7.apiId.toString();
 let show8 = await shows.getIndividualShow("169"); //Breaking Bad
-const s8id = show8._id.toString();
+const s8id = show8.apiId.toString();
 let show9 = await shows.getIndividualShow("177"); //Pretty Little Liars
-const s9id = show9._id.toString();
+const s9id = show9.apiId.toString();
 let show10 = await shows.getIndividualShow("65"); //Bones
-const s10id = show10._id.toString();
+const s10id = show10.apiId.toString();
 
 //Adds sample user information into the database
 let user1 = await users.registerUser("Robert", "Brandl", "robert@gmail.com", "User1234!");

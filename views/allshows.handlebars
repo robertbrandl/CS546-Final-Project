@@ -32,7 +32,8 @@
 </form> 
 <form id="sort-form" method="GET" action="/shows/sort"> 
     <label for="sortFeature">Sort all shows by feature (from lowest to highest):</label> 
-    <select id="sortFeature" name="sortFeature">
+    <select id="sortFeature" name="sortFeature" required>
+          <option value="">Select a feature</option>
           <option value="runtime">Runtime</option>
           <option value="rating">Rating</option>
           <option value="rewatch">Rewatch Percent</option>

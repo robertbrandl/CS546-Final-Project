@@ -16,7 +16,7 @@ const create = async (
 ) => {
     let sId = validation.checkString(showId);
     const showCollection = await shows();
-    let show = await showCollection.findOne({_id: new ObjectId(showId)});
+    let show = await showCollection.findOne({apiId: parseInt(showId)});
     if(!show){
         throw `Invalid show ID, does not exist`
     }
@@ -36,7 +36,7 @@ const create = async (
     if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
 	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
     let newReview = { 
-        showId: sId,
+        showId: show._id,
         userId: uId,
         authorFirstName: fname,
         authorLastName: lname,
@@ -190,7 +190,7 @@ const remove = async (reviewId) => {
     }
     //need to handle how it affects shows and users
     const showCollection = await shows();
-    let show = await showCollection.findOne({_id: new ObjectId(showId)});
+    let show = await showCollection.findOne({_id: new ObjectId(showid)});
     let avgR = show.averageRating;
     let totR = show.reviews.length;
     let rew = show.rewatchPercent;

@@ -68,7 +68,7 @@ router
     let user = await userData.getUser(req.session.user.emailAddress);
     const userReviews = await userData.getReviewsForUser(user);
     for (let i=0; i<userReviews.length; i++) {
-        if (userReviews[i].showId === showId) {
+        if (userReviews[i].showId === show.showId) {
             //user has already posted a review for this show
             return res.status(409).render('error', {title: "Error", notLoggedIn:false, firstName: req.session.user.firstName, code: 409, errorText: "User has already posted a review for this show"});
         }
@@ -237,6 +237,7 @@ router
         }  
     }
     catch(e) {
+        console.log(e)
         res.status(500).render('error', {title:"Error", notLoggedIn: false, firstName: req.session.user.firstName, code:500,errorText:'review could not be updated'});
     }
 });

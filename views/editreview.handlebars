@@ -21,7 +21,7 @@
         <label for="titleInput">Title</label> 
         <input type="text" name="titleInput" id="titleInput" value="{{review.title}}">
         <label for="ratingInput">Rating</label> 
-        <input type="range" name="ratingInput" id="ratingInput" min="0" max="10" oninput="this.nextElementSibling.value = this.value" value="{{review.rating}}">
+        <input type="range" name="ratingInput" id="ratingInput" min="1" max="10" oninput="this.nextElementSibling.value = this.value" value="{{review.rating}}">
         <output>{{review.rating}}</output>
         <label for="contentInput">Content</label>
         <input type="text" name="contentInput" id="contentInput" value="{{review.content}}">
