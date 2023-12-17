@@ -18,3 +18,9 @@ Welcome to our final project for CS 546, a website that allows users to review T
 - Using the navigation bar at the top right of every page, the User can register for an account or log in to their existing account.
   - With an account, you can create, edit, and delete your own reviews for any TV show you would like, and you can save TV shows to a list of shows that you Want to Watch!
   - Your account information, including written reviews and saved shows, can be found on the User Account page, found in the navigation bar once you are logged in.
+- Use the sample accounts below to act as a logged in user!
+## Sample User Accounts
+- User 1 - email: robert@gmail.com; password: User1234!
+- User 2 - email: krystal@gmail.com; password: User3456!
+- User 3 - email: linette@gmail.com; password: User6789!
+- User 4 - email: sydney@gmail.com; password: User1298!
