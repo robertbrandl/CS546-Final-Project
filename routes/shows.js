@@ -129,6 +129,7 @@ router.route('/filter').get(async (req, res) => {
 router.route('/sort').get(async (req, res) => {
     //code here for GET will render the page with all TV Shows with the selected feature
     let body = xss(req.query.sortFeature);
+    let order = xss(req.query.sortOrder)
     let feature = "";
     try{
         feature = validation.checkString(body);
@@ -139,7 +140,17 @@ router.route('/sort').get(async (req, res) => {
         else{
             return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Feature cannot be empty and must be a valid string"});
         }
-      }
+    }
+    try{
+        order = validation.checkString(order);
+    }catch(e){
+        if (req.session.user){
+            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Order cannot be empty and must be a valid string"});
+        }
+        else{
+            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Order cannot be empty and must be a valid string"});
+        }
+    }
     let allfeatures = ['runtime', 'rating', 'rewatch'];
     if (!allfeatures.includes(feature.toLowerCase())){
           if (req.session.user){
@@ -148,9 +159,18 @@ router.route('/sort').get(async (req, res) => {
           else{
               return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Sort feature is not valid"});
           }
-      }
+    }
+    let allorders = ['ascending', 'descending'];
+    if (!allorders.includes(order.toLowerCase())){
+        if (req.session.user){
+            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Sort order is not valid"});
+        }
+        else{
+            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Sort order is not valid"});
+        }
+  }
     try{
-        let s = await showData.sortByFeature(feature, shows);
+        let s = await showData.sortByFeature(feature, order, shows);
         if (req.session.user){
             return res.render('allshows', {title: "Sorted TV Shows", notLoggedIn: false, firstName: req.session.user.firstName, shows: s});
         }
@@ -194,7 +214,9 @@ router.route('/:id').get(async (req, res) => {
     try{
         id = validation.checkString(id);
         let numId = parseInt(id);
-        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {}
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {
+            throw `Show apiId is not valid or not a number`
+        }
     }catch(e){
         if (req.session.user){
             return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})

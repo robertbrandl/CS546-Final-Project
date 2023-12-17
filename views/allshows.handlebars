@@ -35,12 +35,18 @@
     <button type="submit" id="filterSubmitButton">Filter</button> 
 </form> 
 <form id="sort-form" method="GET" action="/shows/sort"> 
-    <label for="sortFeature">Sort all shows by feature (from lowest to highest):</label> 
+    <label for="sortFeature">Select a feature:</label> 
     <select id="sortFeature" name="sortFeature" required>
           <option value="">Select a feature</option>
           <option value="runtime">Runtime</option>
           <option value="rating">Rating</option>
           <option value="rewatch">Rewatch Percent</option>
+    </select>
+    <label for="sortOrder">Select an order to sort by:</label> 
+    <select id="sortOrder" name="sortOrder" required>
+          <option value="">Select an order</option>
+          <option value="ascending">Ascending</option>
+          <option value="descending">Descending</option>
     </select>
     <label for="sortSubmitButton">Submit your sort choice:</label> 
     <button type="submit" id="sortSubmitButton">Sort</button> 

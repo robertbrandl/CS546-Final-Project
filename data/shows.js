@@ -104,17 +104,27 @@ const filterByGenre = async (filteredGenre, s) => {
     if (!filtered || filtered.length <= 0){throw "No shows with that genre"}
     return filtered
 }
-const sortByFeature = async(feature, s) => {
+const sortByFeature = async(feature, order, s) => {
     let shows = s;
     if (s.length == 0) throw "Cannot sort no shows!"
     feature = validation.checkString(feature)
-    if(feature.toLowerCase() === "runtime"){
+    order = validation.checkString(order)
+    if(feature.toLowerCase() === "runtime" && order.toLowerCase() == "descending"){
+        shows.sort((a, b) => b.averageRuntime - a.averageRuntime)
+    }
+    else if(feature.toLowerCase() === "runtime" && order.toLowerCase() == "ascending"){
         shows.sort((a, b) => a.averageRuntime - b.averageRuntime)
     }
-    else if(feature.toLowerCase() === "rating"){
+    else if(feature.toLowerCase() === "rating" && order.toLowerCase() == "descending"){
+        shows.sort((a, b) => b.rating - a.rating)
+    }
+    else if(feature.toLowerCase() === "rating" && order.toLowerCase() == "ascending"){
         shows.sort((a, b) => a.rating - b.rating)
     }
-    else if(feature.toLowerCase() === "rewatch"){
+    else if(feature.toLowerCase() === "rewatch" && order.toLowerCase() == "descending"){
+        shows.sort((a, b) => b.rewatchPercent - a.rewatchPercent)
+    }
+    else if(feature.toLowerCase() === "rewatch" && order.toLowerCase() == "ascending"){
         shows.sort((a, b) => a.rewatchPercent - b.rewatchPercent)
     }else{
         throw `Not a valid search feature`

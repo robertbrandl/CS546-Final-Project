@@ -17,6 +17,11 @@ function checkLoginInput(
     password
 ){
     let email = checkString(emailAddress, "Email");
+    if(!email.match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )){
+        throw `Email must be valid`
+    }
     let pword = checkString(password, "Password");
     if (/\s/.test(pword)) throw "Password cannot contain spaces";
     if (pword.length < 8) throw "Password is not long enough";
@@ -39,6 +44,12 @@ function checkRegisterInput(
     if (/\d/.test(lname)) throw "Last Name cannot contain numbers";
     if (lname.length < 2 || lname.length > 25) throw "Last Name length is invalid";
     let email = checkString(emailAddress, "Email");
+    //https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
+    if(!email.match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )){
+        throw `Email must be valid`
+    }
     let pword = checkString(password, "Password");
     if (/\s/.test(pword)) throw "Password cannot contain spaces";
     if (pword.length < 8) throw "Password is not long enough";
@@ -299,6 +310,7 @@ if (filterForm){
 }
 if (sortForm){
     const sortF = document.getElementById('sortFeature');
+    const sortO = document.getElementById('sortOrder')
     //error-container
     const errorContainer = document.getElementById('error-container-main');
     const errorTextElement =
@@ -310,6 +322,8 @@ if (sortForm){
             sortF.value = sortF.value.trim();
             let allfeatures = ['runtime', 'rating', 'rewatch'];
             if (!allfeatures.includes(sortF.value.toLowerCase())){throw "Sort feature is invalid"}
+            let allorders = ['ascending', 'descending']
+            if (!allorders.includes(sortO.value.toLowerCase())){throw "Order choice is invalid"}
         }
         catch(e) {
             event.preventDefault();
