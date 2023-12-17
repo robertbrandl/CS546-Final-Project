@@ -33,8 +33,18 @@ const create = async (
     if (isNaN(rating)) {throw `${rating} is NaN`;}
     if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid';}
     let cont = validation.checkString(content);
-    if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
-	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
+    //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
+	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
+    let watchBool;
+    if (watchAgain == true) {
+        watchBool = true;
+    }
+    else if (!watchAgain || watchAgain===undefined) {
+        watchBool = false;
+    }
+    else {
+        throw "watchAgain is not a boolean";
+    }
     let newReview = { 
         showId: show._id,
         userId: uId,
@@ -43,7 +53,7 @@ const create = async (
         title: til,
         rating: rating,
         content: cont,
-        watchAgain: watchAgain
+        watchAgain: watchBool
     }
     const reviewCollection = await reviews();
     const insertInfo = await reviewCollection.insertOne(newReview);
@@ -111,13 +121,23 @@ const update = async (
     if (isNaN(rating)) {throw `${rating} is NaN`;}
     if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid'}
     let cont = validation.checkString(content);
-    if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined"}
-	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
+    //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined"}
+	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
+    let watchBool;
+    if (watchAgain == true) {
+        watchBool = true;
+    }
+    else if (!watchAgain || watchAgain===undefined) {
+        watchBool = false;
+    }
+    else {
+        throw "watchAgain is not a boolean";
+    }
     const updatedReview = {
         title: til,
         rating: rating,
         content: cont,
-        watchAgain: watchAgain
+        watchAgain: watchBool
     }
     const reviewCollection = await reviews();
     const updatedInfo = await reviewCollection.findOneAndUpdate(
