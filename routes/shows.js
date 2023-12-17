@@ -61,11 +61,21 @@ router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? 
             throw 'Please enter a valid rating between 0 and 10' ;
         }
         let matchingShows = await showData.findMenu(genre, maxRuntime, minAverageRating);
-        if (req.session.user){
-            return res.render('menuresults', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: matchingShows});
+        if (matchingShows.length < 1) {
+            if (req.session.user){
+                return res.render('menuresults', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: matchingShows,noShows:true});
+            }
+            else{
+                return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows, noShows:true});
+            }
         }
-        else{
-            return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows});
+        else {
+            if (req.session.user){
+                return res.render('menuresults', {title: "Search Results", notLoggedIn: false, firstName: req.session.user.firstName, shows: matchingShows,noShows:false});
+            }
+            else{
+                return res.render('menuresults', {title: "Search Results", notLoggedIn: true, shows: matchingShows,noShows:false});
+            }
         }
       } catch (error) {
         if (req.session.user){

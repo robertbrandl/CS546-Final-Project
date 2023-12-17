@@ -1,3 +1,8 @@
+
+{{#if noShows}}
+    <h1>No shows found</h1>
+{{/if}}
+
 {{#each shows}}
     <h1><a href="/shows/{{apiId}}">{{name}}</a></h1>
     {{#if plot}}
