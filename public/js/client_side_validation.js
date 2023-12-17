@@ -1,3 +1,4 @@
+const { create } = require("express-handlebars");
 
 function checkString(str, fieldName){
     if (!str || str === undefined){
@@ -69,9 +70,14 @@ function checkChangePasswordInput(
     return true;
 }
 
+function checkCreateReviewInput(title, rating, content, watchAgain){
+    
+}
+
 let loginForm = document.getElementById('login-form');
 let regForm = document.getElementById('registration-form');
 let changePasswordForm = document.getElementById('change-password-form');
+let createReviewForm = document.getElementById('create-review-form');
 if (loginForm) {
     const email = document.getElementById('emailAddressInput');
     const password= document.getElementById('passwordInput');
@@ -177,4 +183,32 @@ if (changePasswordForm){
             }
         }
     });
+}
+if (createReviewForm) {
+ //titleInput, ratingInput, contentInput, watchAgainInput
+ const title = document.getElementById('titleInput');
+ const rating = document.getElementById('ratingInput');
+ const content = document.getElementById('contentInput');
+ const watchAgain = document.getElementById('watchAgainInput');
+ //error-container
+ const errorContainer = document.getElementById('error-container');
+ const errorTextElement =
+ errorContainer.getElementsByClassName('text-goes-here')[0];
+ const otherErrorTextElement =
+ document.getElementsByClassName('error')[0];
+ regForm.addEventListener('submit', (event) => {
+    try {
+        errorContainer.classList.add('hidden');
+        let createRev = checkCreateReviewInput(title.value,rating.value,content.value,watchAgain.value);
+    }
+    catch(e) {
+        event.preventDefault();
+        const message = typeof e === 'string' ? e: e.message;
+        errorTextElement.textContent = "Error: "+e;
+        errorContainer.classList.remove('hidden');
+        if (otherErrorTextElement) {
+            otherErrorTextElement.style.display = "none";
+        }
+    }
+    })
 }
