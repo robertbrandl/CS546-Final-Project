@@ -74,14 +74,16 @@ function checkCreateReviewInput(title, rating, content, watchAgain){
    if (rating === undefined || rating === null || !rating){
     throw "The rating is not supplied, null, or undefined";
     }
-    if (typeof rating !== 'number') {throw `${rating} is not a number`;}
-    if (isNaN(rating)) {throw `${rating} is NaN`;}
-    if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid';}
+    let rate = parseInt(rating);
+    if (typeof rate !== 'number') {throw `${rating} is not a number`;}
+    if (isNaN(rate)) {throw `${rating} is NaN`;}
+    if (rate < 1 || rate === Infinity || rate > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'Rating is not valid';}
    let checkContent=  checkString(content, "Review Content");
    //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
 	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
+    console.log(watchAgain);
     let watchBool;
-    if (watchAgain == true) {
+    if (watchAgain == "true") {
         watchBool = true;
     }
     else if (!watchAgain || watchAgain===undefined) {
@@ -97,6 +99,7 @@ let loginForm = document.getElementById('login-form');
 let regForm = document.getElementById('registration-form');
 let changePasswordForm = document.getElementById('change-password-form');
 let createReviewForm = document.getElementById('create-review-form');
+let editReviewForm = document.getElementById('edit-review-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -222,3 +225,31 @@ if (createReviewForm) {
     }
     })
 }
+if (editReviewForm) {
+    //titleInput, ratingInput, contentInput, watchAgainInput
+    const title = document.getElementById('titleInput');
+    const rating = document.getElementById('ratingInput');
+    const content = document.getElementById('contentInput');
+    const watchAgain = document.getElementById('watchAgainInput');
+    //error-container
+    const errorContainer = document.getElementById('error-container');
+    const errorTextElement =
+    errorContainer.getElementsByClassName('text-goes-here')[0];
+    const otherErrorTextElement =
+    document.getElementsByClassName('error')[0];
+    editReviewForm.addEventListener('submit', (event) => {
+       try {
+           errorContainer.classList.add('hidden');
+           let editRev = checkCreateReviewInput(title.value,rating.value,content.value, watchAgain.value);
+       }
+       catch(e) {
+           event.preventDefault();
+           const message = typeof e === 'string' ? e: e.message;
+           errorTextElement.textContent = "Error: "+e;
+           errorContainer.classList.remove('hidden');
+           if (otherErrorTextElement) {
+               otherErrorTextElement.style.display = "none";
+           }
+       }
+       })
+   }
