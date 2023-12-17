@@ -19,7 +19,7 @@ router
         //user is not logged in
         return res.redirect('/user/login');
     }
-    let showId = req.params.id
+    let showId = xss(req.params.id)
     try{ //id validation
         showId = validation.checkString(showId)
         let numId = parseInt(showId)
@@ -46,7 +46,7 @@ router
         //user is not logged in
         return res.redirect('/login');
     }
-    let showId = req.params.id
+    let showId = xss(req.params.id)
     try{ //id validation
         showId = validation.checkString(showId)
         let numId = parseInt(showId)
@@ -79,14 +79,15 @@ router
         let uId = validation.checkString(req.session.user._id);
         let fname = validation.checkString(req.session.user.firstName);
         let lname = validation.checkString(req.session.user.lastName);
-        let til = validation.checkString(reviewInput.titleInput);
-        if (reviewInput.ratingInput === undefined || reviewInput.ratingInput === null || !reviewInput.ratingInput){
+        let til = validation.checkString(xss(reviewInput.titleInput));
+        if (xss(reviewInput.ratingInput) === undefined || reviewInput.ratingInput === null || !reviewInput.ratingInput){
             throw "The rating is not supplied, null, or undefined";
         }
         if (typeof parseInt(reviewInput.ratingInput) !== 'number') {throw `${reviewInput.ratingInput} is not a number`;}
         if (isNaN(reviewInput.ratingInput)) {throw `${reviewInput.ratingInput} is NaN`;}
         if (reviewInput.ratingInput < 1 || reviewInput.ratingInput === Infinity || reviewInput.ratingInput > 10 || (parseFloat(reviewInput.ratingInput) !== parseInt(reviewInput.ratingInput))){throw `${reviewInput.ratingInput} must be integer from 1-10`}
-        let cont = validation.checkString(reviewInput.contentInput);
+        let cont = validation.checkString(xss(reviewInput.contentInput));
+        xss(reviewInput.watchAgainInput);
         if (!reviewInput.watchAgainInput){
             bool = false;
         }
@@ -130,7 +131,7 @@ router
 .get(async (req,res) => {
     //remove a review
     //req.params.id is review id
-    const reviewId = req.params.id.trim();
+    const reviewId = xss(req.params.id.trim());
     const userInfo = req.session.user;
     if (!userInfo) {
         //user is not logged in
@@ -164,7 +165,7 @@ router
         return res.redirect('/login');
     }
     //id validation
-    let reviewId = req.params.id.trim();
+    let reviewId =xss(req.params.id.trim());
     try{
         reviewId = validation.checkString(reviewId)
         if (!ObjectId.isValid(reviewId)) throw 'invalid review id';
@@ -188,7 +189,7 @@ router
 })
 .post(async (req,res) => {
     //update a review
-    const reviewId = req.params.id.trim();
+    const reviewId = xss(req.params.id.trim());
     const reviewInput = req.body;
     const userInfo = req.session.user;
     if (!userInfo) {
@@ -200,14 +201,15 @@ router
     try {
         let rId = validation.checkString(reviewId);
         if (!ObjectId.isValid(rId)) throw 'invalid review id';
-        let til = validation.checkString(reviewInput.titleInput);
-        if (reviewInput.ratingInput === undefined || reviewInput.ratingInput === null || !reviewInput.ratingInput){
+        let til = validation.checkString(xss(reviewInput.titleInput));
+        if (xss(reviewInput.ratingInput) === undefined || reviewInput.ratingInput === null || !reviewInput.ratingInput){
             throw "The rating is not supplied, null, or undefined";
         }
         if (typeof parseInt(reviewInput.ratingInput) !== 'number') {throw `${reviewInput.ratingInput} is not a number`;}
         if (isNaN(reviewInput.ratingInput)) {throw `${reviewInput.ratingInput} is NaN`;}
         if (reviewInput.ratingInput < 1 || reviewInput.ratingInput === Infinity || reviewInput.ratingInput > 10 || (parseFloat(reviewInput.ratingInput) !== parseInt(reviewInput.ratingInput))){throw `${reviewInput.ratingInput} must be integer from 1-10`}
-        let cont = validation.checkString(reviewInput.contentInput);
+        let cont = validation.checkString(xss(reviewInput.contentInput));
+        xss(reviewInput.watchAgainInput);
         if (!reviewInput.watchAgainInput){
             bool = false;
         }

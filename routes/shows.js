@@ -47,12 +47,11 @@ router.route('/findMenu').get(async (req, res) => {//Don't Know What to Watch? M
 });
 router.route('/findMenu').post(async (req, res) => {//Don't Know What to Watch? Menu Route
     //code here for POST 
-
     try {
         let {genre, maxRuntime, minAverageRating} = req.body;
-        genre = validation.checkString(genre);
-        maxRuntime = validation.checkString(maxRuntime);
-        minAverageRating = validation.checkString(minAverageRating);
+        genre = validation.checkString(xss(genre));
+        maxRuntime = validation.checkString(xss(maxRuntime));
+        minAverageRating = validation.checkString(xss(minAverageRating));
         maxRuntime = Number(maxRuntime);
         minAverageRating = Number(minAverageRating);
         if (isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0) {
