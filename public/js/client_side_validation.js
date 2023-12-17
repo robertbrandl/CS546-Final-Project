@@ -109,14 +109,14 @@ if (loginForm) {
         formData.append('email', email);
         formData.append('password', password);
 
-        fetch('/login', {
+        fetch('/user/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: email,
-                password: password
+                emailAddressInput: email,
+                passwordInput: password
             })
         })
         .then(response => response.text()) 
