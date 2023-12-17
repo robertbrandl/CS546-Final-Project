@@ -7,6 +7,7 @@ import {users} from '../config/mongoCollections.js';
 const create = async (
     showId,
     userId,
+    showTitle,
     authorFirstName,
     authorLastName,
     title,
@@ -16,11 +17,12 @@ const create = async (
 ) => {
     let sId = validation.checkString(showId);
     const showCollection = await shows();
-    let show = await showCollection.findOne({_id: new ObjectId(showId)});
+    let show = await showCollection.findOne({apiId: parseInt(showId)});
     if(!show){
         throw `Invalid show ID, does not exist`
     }
     if (!ObjectId.isValid(show._id)) throw 'invalid show ID';
+    showTitle = show.name;
     let uId = validation.checkString(userId);
     if (!ObjectId.isValid(uId)) throw 'invalid user ID';
     let fname = validation.checkString(authorFirstName);
@@ -33,17 +35,28 @@ const create = async (
     if (isNaN(rating)) {throw `${rating} is NaN`;}
     if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid';}
     let cont = validation.checkString(content);
-    if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
-	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
+    //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined";}
+	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean";}
+    let watchBool;
+    if (watchAgain == true) {
+        watchBool = true;
+    }
+    else if (!watchAgain || watchAgain===undefined) {
+        watchBool = false;
+    }
+    else {
+        throw "watchAgain is not a boolean";
+    }
     let newReview = { 
-        showId: sId,
+        showId: show._id,
         userId: uId,
+        showTitle: showTitle,
         authorFirstName: fname,
         authorLastName: lname,
         title: til,
         rating: rating,
         content: cont,
-        watchAgain: watchAgain
+        watchAgain: watchBool
     }
     const reviewCollection = await reviews();
     const insertInfo = await reviewCollection.insertOne(newReview);
@@ -111,13 +124,23 @@ const update = async (
     if (isNaN(rating)) {throw `${rating} is NaN`;}
     if (rating < 1 || rating === Infinity || rating > 10 || (parseFloat(rating) !== parseInt(rating))){throw 'MaxCap is not valid'}
     let cont = validation.checkString(content);
-    if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined"}
-	if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
+    //if (watchAgain === undefined || watchAgain === null){throw "watchAgain is null or undefined"}
+	//if (typeof watchAgain !== "boolean"){throw "watchAgain is not a boolean"}
+    let watchBool;
+    if (watchAgain == true) {
+        watchBool = true;
+    }
+    else if (!watchAgain || watchAgain===undefined) {
+        watchBool = false;
+    }
+    else {
+        throw "watchAgain is not a boolean";
+    }
     const updatedReview = {
         title: til,
         rating: rating,
         content: cont,
-        watchAgain: watchAgain
+        watchAgain: watchBool
     }
     const reviewCollection = await reviews();
     const updatedInfo = await reviewCollection.findOneAndUpdate(
@@ -190,7 +213,7 @@ const remove = async (reviewId) => {
     }
     //need to handle how it affects shows and users
     const showCollection = await shows();
-    let show = await showCollection.findOne({_id: new ObjectId(showId)});
+    let show = await showCollection.findOne({_id: new ObjectId(showid)});
     let avgR = show.averageRating;
     let totR = show.reviews.length;
     let rew = show.rewatchPercent;
