@@ -30,6 +30,12 @@ let show11 = await shows.getIndividualShow("114"); //Survivor
 const s11id = show11.apiId.toString();
 let show12 = await shows.getIndividualShow("71"); //Dancing with the Stars
 const s12id = show12.apiId.toString();
+let show13 = await shows.getIndividualShow("244");
+let show14 = await shows.getIndividualShow("74");
+let show15 = await shows.getIndividualShow("8");
+let show16 = await shows.getIndividualShow("53");
+let show17 = await shows.getIndividualShow("70");
+
 
 //Adds sample user information into the database
 let user1 = await users.registerUser("Robert", "Brandl", "robert@gmail.com", "User1234!");

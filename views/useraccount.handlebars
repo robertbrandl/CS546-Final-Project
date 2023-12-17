@@ -34,9 +34,9 @@
 {{#if savedshows}}
     {{#each savedshows}}
         <h3>{{name}}</h3>
-        <form id="removeShowForm" action="/user/removeshow/{{apiId}}" method="GET">
-            <label for="removeShowButton">Remove this show:</label> 
-            <button type="submit" id="removeShowButton">Delete Show</button>
+        <form class="removeShowForm" action="/user/removeshow/{{apiId}}" method="GET">
+            <label>Remove this show:</label> 
+            <button type="submit" class="removeShowButton">Delete Show</button>
         </form>
     {{/each}}
 {{else}}
