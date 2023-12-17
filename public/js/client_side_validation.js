@@ -1,3 +1,5 @@
+//const { create } = require("express-handlebars");
+
 function checkString(str, fieldName){
     if (!str || str === undefined){
         throw `${fieldName} is not supplied, null, undefined, 0, false, '', or NaN`;
@@ -192,13 +194,13 @@ if (changePasswordForm){
         }
     });
 }
+
 if (createReviewForm) {
  //titleInput, ratingInput, contentInput, watchAgainInput
  const title = document.getElementById('titleInput');
  const rating = document.getElementById('ratingInput');
  const content = document.getElementById('contentInput');
  const watchAgain = document.getElementById('watchAgainInput');
- console.log(watchAgain)
  //error-container
  const errorContainer = document.getElementById('error-container');
  const errorTextElement =
