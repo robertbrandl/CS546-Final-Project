@@ -21,6 +21,10 @@
             <a href = "/user/account"> See Your Account! </a>
         {{/if}}
     </nav>
+    <div class="form-group hidden" id="error-container">
+        <div class="text-goes-here">
+        </div>
+    </div>
     <form id="search-form" method="GET" action="/shows/searchresults"> 
         <label for="searchTerm">Search for a show:</label> 
         <input type="text" id="searchTerm" name="searchTerm" required> 
