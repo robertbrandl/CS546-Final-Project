@@ -96,6 +96,7 @@ function checkCreateReviewInput(title, rating, content, watchAgain){
 let loginForm = document.getElementById('login-form');
 let regForm = document.getElementById('registration-form');
 let changePasswordForm = document.getElementById('change-password-form');
+let createReviewForm = document.getElementById('create-review-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -110,24 +111,36 @@ if (loginForm) {
 
         fetch('/login', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+        .then(response => response.text()) 
         .then(data => {
-            console.log(data);
+            try {
+                
+                const jsonData = JSON.parse(data);
+                if (jsonData.status === 'success') {
+                    window.location.href = '/';  
+                } else {
+                    throw new Error(jsonData.message);
+                }
+            } catch (error) {
+                
+                console.error('The server returned an HTML response:', data);
+                errorTextElement.textContent = 'Error: ' + error.message;
+                errorContainer.classList.remove('hidden');
+                if (otherErrorTextElement) {
+                    otherErrorTextElement.style.display = 'none';
+                }
+            }
         })
         .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
-            errorTextElement.textContent = 'Error: ' + error.message;
-            errorContainer.classList.remove('hidden');
-            if (otherErrorTextElement) {
-                otherErrorTextElement.style.display = 'none';
-            }
+            console.error('There was a problem with the fetch operation:', error);
         });
     });
 }

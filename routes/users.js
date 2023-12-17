@@ -95,41 +95,43 @@ router
     if (!createUserData || Object.keys(createUserData).length === 0) {
       return res
         .status(400)
-        .render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Must enter data for the fields"});
+        .json({status:'error', message: 'Must enter data for the fields'});
     }
     let email = "";
     try{
       email = validation.checkString(xss(createUserData.emailAddressInput));
     }catch(e){
-      return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Email is not valid"});
+      return res.status(400).json({status: 'error', message: 'Email is not valid'});
     }
     email = email.toLowerCase();
-    if (validator.validate(email) === false){return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Invalid email"})}
+    if (validator.validate(email) === false){
+      return res.status(400).json({status: 'error', message: 'Invalid email'});
+    }    
     let pword = "";
     try{
       pword = validation.checkString(xss(createUserData.passwordInput));
     }catch(e){
-      return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Password is not valid"});
+      return res.status(400).json({status: 'error', message: 'Password is not valid'});
     }
-    if (/\s/.test(pword)) return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Password cannot contain spaces"});
-    if (pword.length < 8) return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Password is not long enough"});
-    if ((/[A-Z]/).test(pword) === false) return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Password must contain an uppercase letter"});
-    if (/\d/.test(pword) === false) return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Password must contain a number"});
-    if (/[^a-zA-Z0-9]/.test(pword) === false) return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: Password must contain a special character"});
+    if (/\s/.test(pword)) return res.status(400).json({status: 'error', message: 'Password cannot contain spaces'});
+    if (pword.length < 8) return res.status(400).json({status: 'error', message: 'Password is not long enough'});
+    if ((/[A-Z]/).test(pword) === false) return res.status(400).json({status: 'error', message: 'Password must contain an uppercase letter'});
+    if (/\d/.test(pword) === false) return res.status(400).json({status: 'error', message: 'Password must contain a number'});
+    if (/[^a-zA-Z0-9]/.test(pword) === false) return res.status(400).json({status: 'error', message: 'Password must contain a special character'});
     let result = undefined;
     try{
       result = await userData.loginUser(email, pword);
     }catch(e){
-      return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: " + e});
+      return res.status(400).json({status: 'error', message: 'Error: ' + e});
     }
     if (result !== null){
       req.session.user= {firstName: result.firstName, lastName: result.lastName, emailAddress: result.emailAddress};
       let user = await userData.getUser(req.session.user.emailAddress);
       req.session.user._id = user._id;
-      return res.redirect("/");
+      return res.json({status: 'success', message: 'Logged in successfully'});
     }
     else{
-      return res.status(400).render('login', {title: "Login", notLoggedIn: true, error: true, msg: "Error: You did not provide a valid username and/or password"});
+      return res.status(400).json({status: 'error', message: 'You did not provide a valid username and/or password'});
     }
   });
 
