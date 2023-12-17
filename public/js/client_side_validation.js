@@ -1,4 +1,4 @@
-const { create } = require("express-handlebars");
+//const { create } = require("express-handlebars");
 
 function checkString(str, fieldName){
     if (!str || str === undefined){
@@ -194,6 +194,7 @@ if (changePasswordForm){
         }
     });
 }
+
 if (createReviewForm) {
  //titleInput, ratingInput, contentInput, watchAgainInput
  const title = document.getElementById('titleInput');
