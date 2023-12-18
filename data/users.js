@@ -36,7 +36,8 @@ const registerUser = async (
         emailAddress: email,
         password: hash,
         reviews: [],
-        shows: []
+        shows: [],
+        userUpvotes: []
     }
     const insertInfo = await userCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
@@ -220,4 +221,41 @@ const changePassword = async (
     }
     return {changed:true, updatedInfo:updatedInfo} 
 }
-export default {registerUser, loginUser, getUser, saveShow, removeShow, changePassword, getReviewsForUser, getShowsForUser, getShow};
+const updateUpvoteForUser = async (
+    user, rId
+)=> {
+    //userUpvotes = arr of obj {reviewId: id, isUpvoted: true/false}
+    const userCollection = await users();
+    let upvoteArr = user.userUpvotes;
+    let upvoteAdded = false;
+    let isFound = false;
+    for (let i=0; i<upvoteArr.length; i++) {
+        if (upvoteArr[i].reviewId === rId) {
+            isFound = true;
+            if (upvoteArr[i].isUpvoted=== true) {
+                //user already upvoted this review
+                //now remove the upvote instead
+                upvoteArr[i].isUpvoted = false;
+                upvoteAdded = false;
+            }
+            else {
+                upvoteArr[i].isUpvoted = true;
+                upvoteAdded = true;
+            }
+        }
+    }
+    if (isFound === false) {
+        upvoteArr.push({reviewId: rId, isUpvoted: true});
+        upvoteAdded = true;
+    }
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        {_id: user._id},
+        {$set: {userUpvotes: upvoteArr}},
+        {returnDocument: 'after'}
+      );
+    if (!updatedInfo) {
+        throw `500: User not found or could not successfully update upvotes`;
+    }
+    return upvoteAdded;
+}
+export default {registerUser, loginUser, getUser, saveShow, removeShow, changePassword, getReviewsForUser, getShowsForUser, getShow, updateUpvoteForUser};

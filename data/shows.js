@@ -137,7 +137,10 @@ const sortByFeature = async(feature, order, s) => {
     }
     return shows
 }
-
+const getShow = async(showId)=>{
+    const showCollection = await shows();
+    return await showCollection.findOne({_id: new ObjectId(showId)});
+}
 const getIndividualShow = async (
     apiId
 ) =>{
@@ -380,4 +383,4 @@ const getUserSimiliarShows = async (
     let foundUser = await userCollection.findOne({emailAddress: email});
     return foundUser.shows;
 }
-export default {getAllShows, searchForShow, filterByGenre, sortByFeature, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows};
+export default {getAllShows, searchForShow, filterByGenre, getShow, sortByFeature, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows};
