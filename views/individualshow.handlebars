@@ -90,7 +90,7 @@
         <h4>Upvote Count: {{upvotes}}</h4>
          {{#unless ../notLoggedIn}}
             <form class="upvote-form" method="GET" action="/reviews/{{showId}}/{{_id}}/addUpvote">
-                <label>Upvote Review </label>
+                <label>Press here to upvote this review, but if you've already upvoted, the upvote will be removed if you click again!</label>
                 <button type="submit" class="upvoteButton">Upvote</button>
             </form>
         {{/unless}}
