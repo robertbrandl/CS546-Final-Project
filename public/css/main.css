@@ -89,12 +89,8 @@ input {
     background-color: #F0F7F4;
     color: #3C493F;
     border: 2px solid #F0F7F4;
-    transition: width 0.4s ease-in-out;
 }
 
-input:focus {
-    width: 25%;
-}
 
 button {
     /* referenced https://blog.logrocket.com/how-to-style-forms-with-css-a-beginners-guide/ */
