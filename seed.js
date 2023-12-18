@@ -35,6 +35,19 @@ let show14 = await shows.getIndividualShow("74");
 let show15 = await shows.getIndividualShow("8");
 let show16 = await shows.getIndividualShow("53");
 let show17 = await shows.getIndividualShow("70");
+let show18 = await shows.getIndividualShow("60974");
+let show19 = await shows.getIndividualShow("7369");
+let show20 = await shows.getIndividualShow("1198");
+let show21 = await shows.getIndividualShow("245");
+let show22 = await shows.getIndividualShow("149");
+let show23 = await shows.getIndividualShow("88");
+let show24 = await shows.getIndividualShow("29");
+let show25 = await shows.getIndividualShow("166");
+let show26 = await shows.getIndividualShow("214");
+let show27 = await shows.getIndividualShow("209");
+let show28 = await shows.getIndividualShow("25");
+let show29 = await shows.getIndividualShow("2330");
+let show30 = await shows.getIndividualShow("37884");
 
 
 //Adds sample user information into the database
