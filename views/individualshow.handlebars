@@ -87,6 +87,13 @@
         {{else}}
             <h4>Would you watch again? NO!</h4>
         {{/if}}
+        <h4>Upvote Count: {{upvotes}}</h4>
+         {{#if ../save}}
+            <form class="upvote-form" method="GET" action="/reviews/{{showId}}/{{_id}}/addUpvote">
+                <label>Upvote Review </label>
+                <button type="submit" class="upvoteButton" onclick="changeLabel(this)">Upvote</button>
+            </form>
+        {{/if}}
     {{/each}}
 {{else}}
     <h3>None Posted Yet!</h3>

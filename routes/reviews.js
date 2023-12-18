@@ -241,5 +241,70 @@ router
         res.status(500).render('error', {title:"Error", notLoggedIn: false, firstName: req.session.user.firstName, code:500,errorText:'review could not be updated'});
     }
 });
+//get and add/remove upvotes
+router
+.route('/:showId/:id/addUpvote')
+.get(async (req,res) => {
+    let revs = undefined;
+    let s = [await showData.getShow(xss(req.params.showId))];
+    try{
+        revs = await showData.getReviewsForShow(s[0]);
+    }
+    catch(e){
+        if (req.session.user){
+            return res.status(500).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 500, errorText: e})
+        }
+        else{
+            return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
+        }
+    }
+    let bool = false;
+    if (s[0].averageRating === 0){
+        bool = true;
+    }
+    let simshows = undefined;
+    try{
+        simshows = await showData.getSimilarShows(s[0]);
+    }catch(e){
+        if (req.session.user){
+            return res.status(500).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 500, errorText: e})
+        }
+        else{
+            return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
+        }
+    }
+    if (req.session.user) {
+        let user = await userData.getUser(req.session.user.emailAddress);
+        let reviewId = xss(req.params.id);
+        const updateUpvoteForUser = await userData.updateUpvoteForUser(user,reviewId);
+        if (updateUpvoteForUser) {
+            //upvote added
+            let addVote = await reviewData.addUpvote(reviewId);
+        }
+        else {
+            //upvote removed
+            let removeVote = await reviewData.removeUpvote(reviewId);
+        }
+        const showReviews = await showData.getReviewsForShow(s[0]);
+        let reviewAlreadyExistsForUser = true;
+        for (let i=0; i<showReviews.length; i++) {
+            if (showReviews[i].userId === req.session.user._id) {
+                //user has already posted a review for this show
+                reviewAlreadyExistsForUser = false;
+            }
+        }
+        revs = await showData.getReviewsForShow(s[0]);
+        let userSim = await showData.getUserSimiliarShows(req.session.user.emailAddress);
+        if (userSim.includes((s[0]._id).toString())) {
+            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: false, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
+        }
+        else{
+            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: true, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
+        }
+    }
+    else {
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows});
+    } 
+})
 
 export default router;

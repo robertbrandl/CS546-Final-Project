@@ -47,6 +47,7 @@ const create = async (
     else {
         throw "watchAgain is not a boolean";
     }
+    let upVotes = 0;
     let newReview = { 
         showId: show._id,
         userId: uId,
@@ -56,7 +57,8 @@ const create = async (
         title: til,
         rating: rating,
         content: cont,
-        watchAgain: watchBool
+        watchAgain: watchBool,
+        upvotes: upVotes
     }
     const reviewCollection = await reviews();
     const insertInfo = await reviewCollection.insertOne(newReview);
@@ -259,4 +261,50 @@ const remove = async (reviewId) => {
 		throw updateUser;
     return {eventName: deletionInfo.eventName, deleted: true};
 }
-export default {create, update, remove};
+
+const addUpvote = async(reviewId) => {
+    let mid = validation.checkString(reviewId);
+    if (!ObjectId.isValid(mid)) throw 'invalid object ID';
+    const reviewCollection = await reviews();
+    const review = await reviewCollection.findOne({_id: new ObjectId(mid)});
+    let upVotes = review.upvotes;
+    upVotes = upVotes + 1;
+    const updatedReview = {
+        upvotes: upVotes
+    }
+    const updatedInfo = await reviewCollection.findOneAndUpdate(
+        { _id: new ObjectId(mid) },
+        { $set: updatedReview },
+        { returnDocument: 'after' } 
+    );
+     if (!updatedInfo) {
+        //updating review failed
+        throw "Could not update upvote count";
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+}
+const removeUpvote = async(reviewId) => {
+    let mid = validation.checkString(reviewId);
+    if (!ObjectId.isValid(mid)) throw 'invalid object ID';
+    const reviewCollection = await reviews();
+    const review = await reviewCollection.findOne({_id: new ObjectId(mid)});
+    let upVotes = review.upvotes;
+    upVotes = upVotes - 1;
+    const updatedReview = {
+        upvotes: upVotes
+    }
+    const updatedInfo = await reviewCollection.findOneAndUpdate(
+        { _id: new ObjectId(mid) },
+        { $set: updatedReview },
+        { returnDocument: 'after' } 
+    );
+     if (!updatedInfo) {
+        //updating review failed
+        throw "Could not update upvote count";
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+}
+
+export default {create, update, remove,addUpvote,removeUpvote};
