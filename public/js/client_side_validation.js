@@ -128,6 +128,7 @@ let editReviewForm = document.getElementById('edit-review-form');
 let searchForm = document.getElementById('search-form');
 let filterForm = document.getElementById('filter-form');
 let sortForm = document.getElementById('sort-form');
+let sortRevForm = document.getElementById('sort-review-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -302,7 +303,7 @@ if (searchForm){
 if (filterForm){
     const genre = document.getElementById('filterGenre');
     //error-container
-    const errorContainer = document.getElementById('error-container-main');
+    const errorContainer = document.getElementById('error-container');
     const errorTextElement =
     errorContainer.getElementsByClassName('text-goes-here-search')[0];
     filterForm.addEventListener('submit', (event) => {
@@ -326,7 +327,7 @@ if (sortForm){
     const sortF = document.getElementById('sortFeature');
     const sortO = document.getElementById('sortOrder')
     //error-container
-    const errorContainer = document.getElementById('error-container-main');
+    const errorContainer = document.getElementById('error-container');
     const errorTextElement =
     errorContainer.getElementsByClassName('text-goes-here-search')[0];
     sortForm.addEventListener('submit', (event) => {
@@ -338,6 +339,28 @@ if (sortForm){
             if (!allfeatures.includes(sortF.value.toLowerCase())){throw "Sort feature is invalid"}
             let allorders = ['ascending', 'descending']
             if (!allorders.includes(sortO.value.toLowerCase())){throw "Order choice is invalid"}
+        }
+        catch(e) {
+            event.preventDefault();
+            const message = typeof e === 'string' ? e: e.message;
+            errorTextElement.textContent = "Error: "+e;
+            errorContainer.classList.remove('hidden');
+        }
+    })
+}
+if (sortRevForm){
+    const sortF = document.getElementById('reviewFeature');
+    //error-container
+    const errorContainer = document.getElementById('error-container');
+    const errorTextElement =
+    errorContainer.getElementsByClassName('text-goes-here-search')[0];
+    sortRevForm.addEventListener('submit', (event) => {
+        try {
+            errorContainer.classList.add('hidden');
+            checkString(sortF.value, "Sort Review Feature");
+            sortF.value = sortF.value.trim();
+            let allfeatures = ['upvotes', 'rating'];
+            if (!allfeatures.includes(sortF.value.toLowerCase())){throw "Sort feature is invalid"}
         }
         catch(e) {
             event.preventDefault();

@@ -77,6 +77,10 @@
 {{/each}}
 <h2>Reviews: </h2>
 {{#if review}}
+    <div class="form-group hidden" id="error-container">
+        <div class="text-goes-here">
+        </div>
+    </div>
     <form id="sort-review-form" method="GET" action="/shows/{{show.[0].apiId}}/sort"> 
     <label for="reviewFeature">Sort reviews from highest to lowest by:</label> 
     <select id="reviewFeature" name="reviewFeature" required>
