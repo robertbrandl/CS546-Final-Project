@@ -88,12 +88,12 @@
             <h4>Would you watch again? NO!</h4>
         {{/if}}
         <h4>Upvote Count: {{upvotes}}</h4>
-         {{#if ../save}}
+         {{#unless ../notLoggedIn}}
             <form class="upvote-form" method="GET" action="/reviews/{{showId}}/{{_id}}/addUpvote">
                 <label>Upvote Review </label>
                 <button type="submit" class="upvoteButton">Upvote</button>
             </form>
-        {{/if}}
+        {{/unless}}
     {{/each}}
 {{else}}
     <h3>None Posted Yet!</h3>
@@ -117,4 +117,3 @@
         <h3>Genres: None Found</h3>
     {{/if}}
 {{/each}}
-<script src='../public/js/client_side_validation.js'></script>
