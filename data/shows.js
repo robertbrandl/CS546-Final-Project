@@ -74,8 +74,8 @@ const findMenu = async(genre, maxRuntime, minAverageRating) => {
         throw ('minAverageRating is not valid');
     }
 
-    if (typeof maxRuntime !== 'number' || isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 0 || maxRuntime > 1000) {
-        throw ('Please enter a valid number for maxRuntime between 0 and 1000');
+    if (typeof maxRuntime !== 'number' || isNaN(maxRuntime) || maxRuntime === Infinity || maxRuntime < 1 || maxRuntime > 1000) {
+        throw ('Please enter a valid number for maxRuntime between 1 and 1000');
     }
 
     if (typeof minAverageRating !== 'number' || isNaN(minAverageRating) || minAverageRating === Infinity || minAverageRating < 0 || minAverageRating > 10) {

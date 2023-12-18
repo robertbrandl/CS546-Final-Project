@@ -129,6 +129,7 @@ let searchForm = document.getElementById('search-form');
 let filterForm = document.getElementById('filter-form');
 let sortForm = document.getElementById('sort-form');
 let sortRevForm = document.getElementById('sort-review-form');
+let menuForm = document.getElementById('find-menu-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -369,4 +370,46 @@ if (sortRevForm){
             errorContainer.classList.remove('hidden');
         }
     })
+}
+if (menuForm){
+    const genre = document.getElementById('genre');
+    const maxRuntime = document.getElementById('maxRuntime');
+    const minAverageRating = document.getElementById('minAverageRating');
+    //error-container
+    const errorContainer = document.getElementById('error-container');
+    const errorTextElement =
+    errorContainer.getElementsByClassName('text-goes-here')[0];
+    const otherErrorTextElement =
+    document.getElementsByClassName('error-message')[0];
+    menuForm.addEventListener('submit', (event) => {
+       try {
+            errorContainer.classList.add('hidden');
+            checkString(genre.value, "Filter Genre");
+            genre.value = genre.value.trim();
+            let allgenres = ['Comedy', 'History', 'Sports', 'Horror', 'Adventure', 'Crime', 'Supernatural', 'Action', 'Anime', 'Science-Fiction', 'Drama', 'Legal', 'Thriller', 'Fantasy', 'Family', 'War', 'Medical', 'Espionage', 'Romance', 'Music', 'Western', 'Mystery'];
+            allgenres = allgenres.map(element => element.toLowerCase());
+            if (!allgenres.includes(genre.value.toLowerCase())){ throw "Genre name is not valid";}
+            if (maxRuntime.value === null || maxRuntime.value === undefined) {
+                throw ('maxRuntime is not valid');
+            }
+            if (minAverageRating.value === null || minAverageRating.value === undefined) {
+                throw ('minAverageRating is not valid');
+            }
+            if (typeof parseInt(maxRuntime.value) !== 'number' || isNaN(parseInt(maxRuntime.value)) || parseInt(maxRuntime.value) === Infinity || parseInt(maxRuntime.value) < 1 || parseInt(maxRuntime.value) > 1000) {
+                throw ('Please enter a valid number for maxRuntime between 1 and 1000');
+            }
+            if (typeof parseInt(minAverageRating.value) !== 'number' || isNaN(parseInt(minAverageRating.value)) || parseInt(minAverageRating.value) === Infinity || parseInt(minAverageRating.value) < 0 || parseInt(minAverageRating.value) > 10) {
+                throw ('Please enter a valid number for minAverageRating between 0 and 10');
+            }
+       }
+       catch(e) {
+           event.preventDefault();
+           const message = typeof e === 'string' ? e: e.message;
+           errorTextElement.textContent = "Error: "+e;
+           errorContainer.classList.remove('hidden');
+           if (otherErrorTextElement) {
+               otherErrorTextElement.style.display = "none";
+           }
+       }
+       })
 }

@@ -3,7 +3,11 @@
     <div class="error-message">
         {{ error }}
     </div>
-<form action="/shows/findMenu" method="post">
+<div class="form-group hidden" id="error-container">
+        <div class="text-goes-here">
+        </div>
+</div>
+<form id="find-menu-form" action="/shows/findMenu" method="post">
   <label for="genre">Genre:</label>
   <select id="genre" name="genre" required>
     <option value="">Select a genre</option>
