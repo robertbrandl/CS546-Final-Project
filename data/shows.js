@@ -64,7 +64,9 @@ const searchForShow = async(
     return arr;
 }
 const findMenu = async(genre, maxRuntime, minAverageRating) => {
-    genre = validation.checkString(genre);
+const findMenu = async (genre, maxRuntime, minAverageRating) => {
+try {
+genre = validation.checkString(genre);
     if (maxRuntime === null || maxRuntime === undefined) {
         throw new Error('maxRuntime is not valid');
     }
@@ -81,18 +83,22 @@ const findMenu = async(genre, maxRuntime, minAverageRating) => {
         throw new Error('Please enter a valid number for minAverageRating between 0 and 10');
     }
 
-    const allShows = await getAllShows();
-    let matchingShows = [];
+const allShows = await getAllShows();
+let matchingShows = [];
     for (let show of allShows) {
-      if (show.genres.includes(genre) && show.averageRuntime <= maxRuntime && show.rating >= minAverageRating) {
-        matchingShows.push(show);
-      }
-      if (matchingShows.length >= 5) {
-        break;
-      }
+        if (show.genres.includes(genre) && show.averageRuntime <= maxRuntime && show.rating >= minAverageRating) {
+            matchingShows.push(show);
+        }
+        if (matchingShows.length >= 5) {
+            break;
+        }
     }
-    return matchingShows.slice(0, 5);
-  };
+            return matchingShows.slice(0, 5);
+        } catch (error) {
+            alert("Error: " + error.message);
+            return [];
+        }
+    };
 const filterByGenre = async (filteredGenre, s) => {
     filteredGenre = validation.checkString(filteredGenre)
     let allgenres = ['Comedy', 'History', 'Sports', 'Horror', 'Adventure', 'Crime', 'Supernatural', 'Action', 'Anime', 'Science-Fiction', 'Drama', 'Legal', 'Thriller', 'Fantasy', 'Family', 'War', 'Medical', 'Espionage', 'Romance', 'Music', 'Western', 'Mystery'];
