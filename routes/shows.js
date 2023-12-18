@@ -168,7 +168,7 @@ router.route('/sort').get(async (req, res) => {
         else{
             return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Sort order is not valid"});
         }
-  }
+    }
     try{
         let s = await showData.sortByFeature(feature, order, shows);
         if (req.session.user){
@@ -244,6 +244,97 @@ router.route('/:id').get(async (req, res) => {
     let revs = undefined;
     try{
         revs = await showData.getReviewsForShow(s[0]);
+    }catch(e){
+        if (req.session.user){
+            return res.status(500).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 500, errorText: e})
+        }
+        else{
+            return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
+        }
+    }
+    let simshows = undefined;
+    try{
+        simshows = await showData.getSimilarShows(s[0]);
+    }catch(e){
+        if (req.session.user){
+            return res.status(500).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 500, errorText: e})
+        }
+        else{
+            return res.status(500).render("error", {title: "Error", notLoggedIn: true, code: 500, errorText: e})
+        }
+    }
+    //check if user has posted a review for this show already
+
+    if (req.session.user){
+        const showReviews = await showData.getReviewsForShow(s[0]);
+        let reviewAlreadyExistsForUser = true;
+        for (let i=0; i<showReviews.length; i++) {
+            if (showReviews[i].userId === req.session.user._id) {
+                //user has already posted a review for this show
+                reviewAlreadyExistsForUser = false;
+            }
+        }
+        
+        let userSim = await showData.getUserSimiliarShows(req.session.user.emailAddress);
+        if (userSim.includes((s[0]._id).toString())) {
+            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: false, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
+        }
+        else{
+            return res.render('individualshow', {title: "Individual Show", notLoggedIn: false,  firstName: req.session.user.firstName, show: s, save: true, check: bool, review: revs, sims: simshows, reviewExists: reviewAlreadyExistsForUser});
+        }
+
+    }
+    else{
+        return res.render('individualshow', {title: "Individual Show", notLoggedIn: true, save: false, show: s, check: bool, review: revs, sims: simshows});
+    }
+});
+router.route('/:id/sort').get(async (req, res) => {
+    //code here for GET will render the individual TV Show page
+    let id = xss(req.params.id);
+    let feature = xss(req.query.reviewFeature);
+    let allfeatures = ['rating', 'upvotes'];
+    if (!allfeatures.includes(feature.toLowerCase())){
+        if (req.session.user){
+            return res.status(400).render('error', {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Sort feature is not valid"});
+        }
+        else{
+            return res.status(400).render('error', {title: "Error", notLoggedIn: true, code: 400, errorText: "Sort feature is not valid"});
+        }
+    }
+    try{
+        id = validation.checkString(id);
+        let numId = parseInt(id);
+        if (typeof numId !== "number" || isNaN(numId) || numId === Infinity) {
+            throw `Show apiId is not valid or not a number`
+        }
+    }catch(e){
+        if (req.session.user){
+            return res.status(400).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 400, errorText: "Show apiId is not valid or not a number"})
+        }
+        else{
+            return res.status(400).render("error", {title: "Error", notLoggedIn: true, code: 400, errorText: "Show apiId is not valid or not a number"})
+        }
+    }
+    let s = undefined;
+    try{
+        s = [await showData.getIndividualShow(id)];
+    }catch(e){
+        let codenum = parseInt(e.substring(0,3));
+        if (req.session.user){
+            return res.status(codenum).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: codenum, errorText: e.substring(3)});
+        }
+        else{
+            return res.status(codenum).render("error", {title: "Error", notLoggedIn: true, code: codenum, errorText: e.substring(3)});
+        }
+    }
+    let bool = false;
+    if (s[0].averageRating === 0){
+        bool = true;
+    }
+    let revs = undefined;
+    try{
+        revs = await showData.getReviewsForShow(s[0]);
+        revs = showData.sortReviews(revs, feature)
     }catch(e){
         if (req.session.user){
             return res.status(500).render("error", {title: "Error", notLoggedIn: false, firstName: req.session.user.firstName, code: 500, errorText: e})

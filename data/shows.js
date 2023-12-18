@@ -237,6 +237,19 @@ const getReviewsForShow = async (
     }
     return arr;
 }
+const sortReviews = (revs, feature) =>{
+    if (revs.length == 0) throw "Cannot sort no reviews!"
+    feature = validation.checkString(feature)
+    if(feature.toLowerCase() === "rating"){
+        revs.sort((a, b) => b.rating - a.rating)
+    }
+    else if(feature.toLowerCase() === "upvotes"){
+        revs.sort((a, b) => b.upvotes - a.upvotes)
+    }else{
+        throw `Not a valid review sorting feature`
+    }
+    return revs
+}
 
 const match = (array1, array2, currId) => {
     let arr = []
@@ -383,4 +396,4 @@ const getUserSimiliarShows = async (
     let foundUser = await userCollection.findOne({emailAddress: email});
     return foundUser.shows;
 }
-export default {getAllShows, searchForShow, filterByGenre, getShow, sortByFeature, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows};
+export default {getAllShows, searchForShow, filterByGenre, getShow, sortByFeature, getIndividualShow, getSimilarShows, findMenu, getReviewsForShow, getUserSimiliarShows, sortReviews};
